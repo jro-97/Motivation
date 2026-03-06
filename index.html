@@ -1241,8 +1241,17 @@
           quotesByDate[q.date] = q;
         });
 
-        // Find today's quote or most recent
-        var todayQuote = quotesByDate[today];
+        // Check for ?date= parameter in URL
+        var urlParams = new URLSearchParams(window.location.search);
+        var requestedDate = urlParams.get('date');
+
+        // Find requested quote, today's quote, or most recent
+        var todayQuote = null;
+        if (requestedDate && quotesByDate[requestedDate]) {
+          todayQuote = quotesByDate[requestedDate];
+        } else {
+          todayQuote = quotesByDate[today];
+        }
         if (!todayQuote) {
           var sorted = quotes.slice().sort(function(a, b) {
             return b.date.localeCompare(a.date);
