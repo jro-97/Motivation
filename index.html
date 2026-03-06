@@ -33,7 +33,6 @@
       color: #3D2C2C;
       min-height: 100vh;
       overflow-x: hidden;
-      /* Warm animated gradient background */
       background: linear-gradient(135deg, #FFF5EE 0%, #FFE4D6 25%, #FFDEE9 50%, #E8D5F5 75%, #D4E5FF 100%);
       background-size: 400% 400%;
       animation: bgShift 20s ease infinite;
@@ -67,12 +66,8 @@
         opacity: 0;
         transform: translateY(100vh) scale(0);
       }
-      10% {
-        opacity: 0.7;
-      }
-      90% {
-        opacity: 0.7;
-      }
+      10% { opacity: 0.7; }
+      90% { opacity: 0.7; }
       100% {
         opacity: 0;
         transform: translateY(-20vh) scale(1);
@@ -110,41 +105,42 @@
       font-weight: 600;
     }
 
-    /* ========== STREAK BADGE ========== */
-    .streak-badge {
+    /* ========== MOOD BADGE ========== */
+    .mood-badge {
       display: none;
       justify-content: center;
       align-items: center;
-      gap: 0.4rem;
+      gap: 0.45rem;
       margin: 0.8rem auto 0;
-      padding: 0.4rem 1rem;
+      padding: 0.45rem 1.1rem;
       background: rgba(255, 255, 255, 0.7);
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       border-radius: 50px;
       width: fit-content;
-      box-shadow: 0 2px 12px rgba(255, 107, 107, 0.12);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
       border: 1px solid rgba(255, 255, 255, 0.6);
     }
 
-    .streak-badge.show {
+    .mood-badge.show {
       display: flex;
     }
 
-    .streak-flame {
-      font-size: 1.1rem;
-      animation: flamePulse 1.5s ease-in-out infinite;
+    .mood-emoji {
+      font-size: 1.15rem;
+      animation: moodBounce 2s ease-in-out infinite;
     }
 
-    @keyframes flamePulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.2); }
+    @keyframes moodBounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-3px); }
     }
 
-    .streak-text {
-      font-size: 0.8rem;
+    .mood-label {
+      font-size: 0.78rem;
       font-weight: 700;
-      color: #E85D4A;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
     }
 
     /* ========== QUOTE CARD CONTAINER ========== */
@@ -166,7 +162,7 @@
       }
     }
 
-    /* ========== QUOTE CARD (the downloadable element) ========== */
+    /* ========== QUOTE CARD ========== */
     .quote-card {
       position: relative;
       width: 100%;
@@ -216,6 +212,13 @@
       width: 100%;
     }
 
+    /* Mood emoji on the card itself */
+    .quote-card .card-mood-emoji {
+      font-size: 2rem;
+      margin-bottom: 0.3rem;
+      filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+    }
+
     .quote-card .deco-quote {
       font-family: 'Playfair Display', serif;
       font-size: 5.5rem;
@@ -260,13 +263,16 @@
       letter-spacing: 0.08em;
     }
 
-    /* Small heart on the card */
-    .quote-card .card-heart {
+    .quote-card .card-mood-label {
       position: absolute;
-      bottom: 12px;
-      right: 16px;
-      font-size: 0.9rem;
-      opacity: 0.3;
+      top: 14px;
+      right: 18px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.65rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: rgba(255,255,255,0.45);
       z-index: 1;
     }
 
@@ -414,6 +420,7 @@
     .calendar-day {
       aspect-ratio: 1;
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       border-radius: 12px;
@@ -424,10 +431,16 @@
       cursor: default;
       transition: transform 0.15s ease;
       -webkit-tap-highlight-color: transparent;
+      gap: 1px;
     }
 
     .calendar-day.empty {
       visibility: hidden;
+    }
+
+    .calendar-day .day-mood {
+      font-size: 0.55rem;
+      line-height: 1;
     }
 
     .calendar-day.has-quote {
@@ -450,7 +463,7 @@
     .calendar-day.today::after {
       content: '';
       position: absolute;
-      bottom: 3px;
+      bottom: 2px;
       width: 4px;
       height: 4px;
       border-radius: 50%;
@@ -573,9 +586,10 @@
     <header class="header">
       <h1>Motivation</h1>
       <p class="subtitle">a little note from Dad, every day</p>
-      <div class="streak-badge" id="streakBadge">
-        <span class="streak-flame">&#x1F525;</span>
-        <span class="streak-text" id="streakText"></span>
+      <!-- Mood badge (replaces streak) -->
+      <div class="mood-badge" id="moodBadge">
+        <span class="mood-emoji" id="moodEmoji"></span>
+        <span class="mood-label" id="moodLabel"></span>
       </div>
     </header>
 
@@ -586,13 +600,14 @@
     <div class="card-wrapper" id="mainCardWrapper" style="display:none;">
       <div class="quote-card" id="mainCard">
         <div class="card-content">
+          <div class="card-mood-emoji" id="mainCardMoodEmoji"></div>
           <div class="deco-quote">&ldquo;</div>
           <p class="quote-text" id="mainQuote"></p>
           <p class="quote-author" id="mainAuthor"></p>
           <p class="quote-note" id="mainNote"></p>
           <p class="quote-date" id="mainDate"></p>
         </div>
-        <span class="card-heart">&hearts;</span>
+        <span class="card-mood-label" id="mainCardMoodLabel"></span>
       </div>
     </div>
 
@@ -633,13 +648,14 @@
       <button class="modal-close" onclick="closeModalDirect()" aria-label="Close">&times;</button>
       <div class="quote-card" id="modalCard">
         <div class="card-content">
+          <div class="card-mood-emoji" id="modalCardMoodEmoji"></div>
           <div class="deco-quote">&ldquo;</div>
           <p class="quote-text" id="modalQuote"></p>
           <p class="quote-author" id="modalAuthor"></p>
           <p class="quote-note" id="modalNote"></p>
           <p class="quote-date" id="modalDate"></p>
         </div>
-        <span class="card-heart">&hearts;</span>
+        <span class="card-mood-label" id="modalCardMoodLabel"></span>
       </div>
       <button class="modal-save-btn" onclick="saveCard('modalCard', modalCurrentDate)">
         Save This Quote
@@ -655,7 +671,28 @@
     var allQuotes = [];
     var quotesByDate = {};
     var calendarYear = 0;
-    var calendarMonth = 0; // 0-indexed
+    var calendarMonth = 0;
+
+    /* ========== MOOD CONFIG ========== */
+    var MOODS = {
+      brave:   { emoji: '\uD83E\uDD81', label: "today's mood: brave",    color: '#E85D4A' },
+      strong:  { emoji: '\uD83D\uDCAA', label: "today's mood: strong",   color: '#E85D4A' },
+      kind:    { emoji: '\uD83C\uDF38', label: "today's mood: kind",     color: '#E879A8' },
+      dreamy:  { emoji: '\u2728',       label: "today's mood: dreamy",   color: '#8B5CF6' },
+      loved:   { emoji: '\uD83D\uDC96', label: "today's mood: loved",    color: '#EC4899' },
+      joyful:  { emoji: '\u2600\uFE0F', label: "today's mood: joyful",   color: '#F59E0B' },
+      wise:    { emoji: '\uD83E\uDD89', label: "today's mood: wise",     color: '#6366F1' },
+      calm:    { emoji: '\uD83C\uDF3F', label: "today's mood: calm",     color: '#10B981' },
+      fierce:  { emoji: '\uD83D\uDD25', label: "today's mood: fierce",   color: '#F43F5E' },
+      hopeful: { emoji: '\uD83C\uDF08', label: "today's mood: hopeful",  color: '#0EA5E9' },
+      playful: { emoji: '\uD83E\uDD8B', label: "today's mood: playful",  color: '#A78BFA' },
+      grateful:{ emoji: '\uD83D\uDE4F', label: "today's mood: grateful", color: '#F97316' }
+    };
+
+    function getMood(quote) {
+      if (quote.mood && MOODS[quote.mood]) return MOODS[quote.mood];
+      return null;
+    }
 
     /* ========== SPARKLE GENERATOR ========== */
     (function createSparkles() {
@@ -716,36 +753,26 @@
       return y + '-' + String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
     }
 
-    /* ========== STREAK CALCULATOR ========== */
-    function calculateStreak(quotes) {
-      if (quotes.length === 0) return 0;
-      // Sort dates descending
-      var dates = quotes.map(function(q) { return q.date; }).sort().reverse();
-      var today = getTodayStr();
-      // Start from today or most recent
-      var startIdx = dates.indexOf(today);
-      if (startIdx === -1) startIdx = 0;
-
-      var streak = 1;
-      for (var i = startIdx; i < dates.length - 1; i++) {
-        var curr = new Date(dates[i] + 'T12:00:00');
-        var prev = new Date(dates[i + 1] + 'T12:00:00');
-        var diff = (curr - prev) / (1000 * 60 * 60 * 24);
-        if (Math.round(diff) === 1) {
-          streak++;
-        } else {
-          break;
-        }
-      }
-      return streak;
-    }
-
     /* ========== RENDER CARD ========== */
     function renderCard(cardEl, quote) {
       var themeIdx = themeForDate(quote.date);
       cardEl.className = cardEl.className.replace(/theme-\d+/g, '').trim();
       cardEl.classList.add('quote-card');
       cardEl.classList.add('theme-' + themeIdx);
+
+      // Mood emoji on card
+      var moodEmojiEl = cardEl.querySelector('.card-mood-emoji');
+      var moodLabelEl = cardEl.querySelector('.card-mood-label');
+      var mood = getMood(quote);
+      if (mood) {
+        moodEmojiEl.textContent = mood.emoji;
+        moodEmojiEl.style.display = '';
+        moodLabelEl.textContent = quote.mood;
+        moodLabelEl.style.display = '';
+      } else {
+        moodEmojiEl.style.display = 'none';
+        moodLabelEl.style.display = 'none';
+      }
 
       cardEl.querySelector('.quote-text').textContent = '\u201C' + quote.quote + '\u201D';
       cardEl.querySelector('.quote-author').textContent = '\u2014 ' + quote.author;
@@ -770,11 +797,9 @@
       title.textContent = formatMonthYear(calendarYear, calendarMonth);
       grid.innerHTML = '';
 
-      // First day of month and total days
       var firstDay = new Date(calendarYear, calendarMonth, 1).getDay();
       var daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
 
-      // Empty cells for offset
       for (var e = 0; e < firstDay; e++) {
         var empty = document.createElement('div');
         empty.className = 'calendar-day empty';
@@ -787,7 +812,6 @@
       for (var d = 1; d <= daysInMonth; d++) {
         var cell = document.createElement('div');
         cell.className = 'calendar-day';
-        cell.textContent = d;
 
         var dateStr = padDate(calendarYear, calendarMonth, d);
         var cellDate = new Date(calendarYear, calendarMonth, d);
@@ -800,15 +824,32 @@
           cell.classList.add('today');
         }
 
-        if (quotesByDate[dateStr]) {
+        var quote = quotesByDate[dateStr];
+        if (quote) {
           cell.classList.add('has-quote');
           cell.classList.add('theme-' + themeForDate(dateStr));
+
+          // Show mood emoji inside the calendar cell
+          var mood = getMood(quote);
+          if (mood) {
+            var moodSpan = document.createElement('span');
+            moodSpan.className = 'day-mood';
+            moodSpan.textContent = mood.emoji;
+            cell.appendChild(moodSpan);
+          }
+
+          var numSpan = document.createElement('span');
+          numSpan.textContent = d;
+          cell.appendChild(numSpan);
+
           (function(ds) {
             cell.onclick = function() {
-              if (ds === currentDate) return; // already showing
+              if (ds === currentDate) return;
               openModal(quotesByDate[ds]);
             };
           })(dateStr);
+        } else {
+          cell.textContent = d;
         }
 
         grid.appendChild(cell);
@@ -890,14 +931,16 @@
         document.getElementById('mainCardWrapper').style.display = '';
         document.getElementById('saveBtn').style.display = '';
 
-        // Streak
-        var streak = calculateStreak(quotes);
-        if (streak >= 2) {
-          document.getElementById('streakText').textContent = streak + ' day streak!';
-          document.getElementById('streakBadge').classList.add('show');
+        // Mood badge in header
+        var mood = getMood(todayQuote);
+        if (mood) {
+          document.getElementById('moodEmoji').textContent = mood.emoji;
+          document.getElementById('moodLabel').textContent = mood.label;
+          document.getElementById('moodLabel').style.color = mood.color;
+          document.getElementById('moodBadge').classList.add('show');
         }
 
-        // Calendar — start on current month
+        // Calendar
         var now = new Date();
         calendarYear = now.getFullYear();
         calendarMonth = now.getMonth();

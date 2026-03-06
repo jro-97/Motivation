@@ -19,7 +19,8 @@ A daily motivational quote app for my daughters. Each day I add a new quote, com
     "date": "2026-03-07",
     "quote": "Your new quote goes here.",
     "author": "Author Name",
-    "note": "A personal note for the girls. — Dad"
+    "note": "A personal note for the girls. — Dad",
+    "mood": "brave"
   },
   ... (previous entries stay below)
 ]
@@ -30,6 +31,7 @@ A daily motivational quote app for my daughters. Each day I add a new quote, com
    - There's a **comma** after the closing `}` of your new entry (before the next entry)
    - The **quote** and **author** fields are filled in
    - The **note** field is optional but adds a personal touch
+   - The **mood** field is optional — it adds a themed emoji to the card and calendar (see mood list below)
 6. Scroll down and tap **"Commit changes"**
 7. Wait about 60 seconds for GitHub Pages to rebuild
 8. Open your site link, confirm the new quote shows up, and text the link to the group chat!
@@ -44,7 +46,8 @@ A daily motivational quote app for my daughters. Each day I add a new quote, com
     "date": "2026-03-06",
     "quote": "She believed she could, so she did.",
     "author": "R.S. Grey",
-    "note": "Never stop believing in yourselves. — Dad"
+    "note": "Never stop believing in yourselves. — Dad",
+    "mood": "brave"
   }
 ]
 ```
@@ -55,6 +58,24 @@ A daily motivational quote app for my daughters. Each day I add a new quote, com
 | `quote`  | Yes       | The motivational quote text                    |
 | `author` | Yes       | Who said or wrote the quote                    |
 | `note`   | No        | A personal note from you (shown on the card)   |
+| `mood`   | No        | A mood keyword — adds emoji to the card & calendar |
+
+### Available Moods
+
+| Mood       | Emoji |
+|------------|-------|
+| `brave`    | lion  |
+| `strong`   | flex  |
+| `kind`     | cherry blossom |
+| `dreamy`   | sparkles |
+| `loved`    | heart |
+| `joyful`   | sun   |
+| `wise`     | owl   |
+| `calm`     | leaf  |
+| `fierce`   | fire  |
+| `hopeful`  | rainbow |
+| `playful`  | butterfly |
+| `grateful` | hands |
 
 ---
 
@@ -75,7 +96,8 @@ If you haven't enabled GitHub Pages yet:
 ## Features
 
 - **Today's quote** displayed as a beautiful, shareable card
+- **Daily mood** — optional mood tag with themed emoji on cards and calendar
 - **Save to Phone** button to download the card as a PNG image
-- **Previous Messages** archive to browse and save past quotes
+- **Calendar archive** — browse past quotes on a visual monthly calendar
 - **Mobile-first** design that looks great on any phone
 - **No backend** — pure static site, works entirely on GitHub Pages
