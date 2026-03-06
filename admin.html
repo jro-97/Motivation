@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Motivation - Admin</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { font-size: 16px; -webkit-text-size-adjust: 100%; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      color: #3D2C2C;
+      min-height: 100vh;
+      overflow-x: hidden;
+      background: linear-gradient(135deg, #FFF5EE 0%, #FFE4D6 25%, #FFDEE9 50%, #E8D5F5 75%, #D4E5FF 100%);
+      background-size: 400% 400%;
+      animation: bgShift 20s ease infinite;
+    }
+
+    @keyframes bgShift {
+      0%, 100% { background-position: 0% 50%; }
+      25% { background-position: 100% 0%; }
+      50% { background-position: 100% 100%; }
+      75% { background-position: 0% 100%; }
+    }
+
+    .container {
+      max-width: 460px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #FF6B6B, #FF8E53, #FFBD39);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header .subtitle {
+      font-size: 0.85rem;
+      color: #C0856F;
+      margin-top: 0.2rem;
+      font-weight: 600;
+    }
+
+    .back-link {
+      display: inline-block;
+      margin-bottom: 1rem;
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #C0856F;
+      text-decoration: none;
+    }
+
+    .back-link:hover { text-decoration: underline; }
+
+    /* ========== SETUP PANEL ========== */
+    .setup-panel {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 1.2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .setup-panel h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      margin-bottom: 0.6rem;
+      color: #5D4037;
+    }
+
+    .setup-panel p {
+      font-size: 0.8rem;
+      color: #8B7B6B;
+      margin-bottom: 0.8rem;
+      line-height: 1.5;
+    }
+
+    .token-row {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .token-row input {
+      flex: 1;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 0.4rem;
+      vertical-align: middle;
+    }
+
+    .status-dot.connected { background: #10B981; }
+    .status-dot.disconnected { background: #EF4444; }
+
+    .status-text {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #8B7B6B;
+      margin-top: 0.5rem;
+    }
+
+    /* ========== FORM ========== */
+    .form-panel {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 1.5rem;
+      margin-bottom: 1.2rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .form-panel h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      margin-bottom: 1rem;
+      color: #5D4037;
+    }
+
+    .field {
+      margin-bottom: 1rem;
+    }
+
+    .field label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: #8B7B6B;
+      margin-bottom: 0.35rem;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      padding: 0.7rem 0.9rem;
+      border: 2px solid rgba(200, 170, 150, 0.25);
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.7);
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      color: #3D2C2C;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    .field input:focus,
+    .field textarea:focus,
+    .field select:focus {
+      border-color: #FF8E53;
+    }
+
+    .field textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .field .hint {
+      font-size: 0.72rem;
+      color: #B8A090;
+      margin-top: 0.25rem;
+    }
+
+    /* Mood picker */
+    .mood-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.4rem;
+    }
+
+    .mood-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 0.5rem 0.2rem;
+      border: 2px solid transparent;
+      border-radius: 12px;
+      background: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: all 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .mood-option:active {
+      transform: scale(0.93);
+    }
+
+    .mood-option.selected {
+      border-color: #FF8E53;
+      background: rgba(255, 142, 83, 0.1);
+    }
+
+    .mood-option .m-emoji {
+      font-size: 1.3rem;
+      margin-bottom: 0.15rem;
+    }
+
+    .mood-option .m-label {
+      font-size: 0.62rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #8B7B6B;
+    }
+
+    /* ========== BUTTONS ========== */
+    .btn-primary {
+      display: block;
+      width: 100%;
+      padding: 0.9rem;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #FF6B6B, #FF8E53);
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(255, 107, 107, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s;
+      -webkit-tap-highlight-color: transparent;
+      letter-spacing: 0.02em;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.97);
+    }
+
+    .btn-primary:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      display: block;
+      width: 100%;
+      padding: 0.7rem;
+      border: none;
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.6);
+      color: #8B7B6B;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+      transition: background 0.2s;
+    }
+
+    .btn-secondary:active {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    /* ========== TOAST ========== */
+    .toast {
+      position: fixed;
+      bottom: 2rem;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+      z-index: 2000;
+      transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast.success { background: linear-gradient(135deg, #10B981, #34D399); }
+    .toast.error { background: linear-gradient(135deg, #EF4444, #F87171); }
+
+    /* ========== RECENT LIST ========== */
+    .recent-panel {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .recent-panel h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      margin-bottom: 0.8rem;
+      color: #5D4037;
+    }
+
+    .recent-item {
+      padding: 0.6rem 0;
+      border-bottom: 1px solid rgba(200, 170, 150, 0.15);
+    }
+
+    .recent-item:last-child { border-bottom: none; }
+
+    .recent-item .r-date {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #B8A090;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .recent-item .r-quote {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.9rem;
+      color: #3D2C2C;
+      margin-top: 0.15rem;
+      line-height: 1.4;
+    }
+
+    .recent-item .r-author {
+      font-size: 0.78rem;
+      color: #A09080;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <a href="index.html" class="back-link">&larr; Back to Motivation</a>
+
+    <div class="header">
+      <h1>Admin</h1>
+      <p class="subtitle">add a new quote</p>
+    </div>
+
+    <!-- GitHub Token Setup -->
+    <div class="setup-panel" id="setupPanel">
+      <h2>GitHub Connection</h2>
+      <p>Enter your GitHub Personal Access Token to publish quotes directly. The token is stored only in this browser and never sent anywhere except GitHub.</p>
+      <div class="field">
+        <label>Personal Access Token</label>
+        <div class="token-row">
+          <input type="password" id="tokenInput" placeholder="ghp_xxxxxxxxxxxx">
+          <button class="btn-secondary" onclick="saveToken()" style="width:auto;padding:0.7rem 1.2rem;">Save</button>
+        </div>
+        <div class="hint">Needs "Contents" read/write permission on this repo.</div>
+      </div>
+      <div class="status-text" id="tokenStatus">
+        <span class="status-dot disconnected"></span> Not connected
+      </div>
+    </div>
+
+    <!-- Quote Form -->
+    <div class="form-panel">
+      <h2>New Quote</h2>
+
+      <div class="field">
+        <label>Date</label>
+        <input type="date" id="fieldDate">
+      </div>
+
+      <div class="field">
+        <label>Quote</label>
+        <textarea id="fieldQuote" placeholder="She believed she could, so she did."></textarea>
+      </div>
+
+      <div class="field">
+        <label>Author</label>
+        <input type="text" id="fieldAuthor" placeholder="R.S. Grey">
+      </div>
+
+      <div class="field">
+        <label>Note from Dad <span style="font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
+        <input type="text" id="fieldNote" placeholder="Never stop believing in yourselves. — Dad">
+      </div>
+
+      <div class="field">
+        <label>Mood</label>
+        <div class="mood-grid" id="moodGrid"></div>
+      </div>
+
+      <button class="btn-primary" id="publishBtn" onclick="publishQuote()">
+        Publish Quote
+      </button>
+    </div>
+
+    <!-- Recent Quotes -->
+    <div class="recent-panel">
+      <h2>Recent Quotes</h2>
+      <div id="recentList">Loading...</div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+
+  <script>
+    /* ========== CONFIG ========== */
+    var REPO_OWNER = '';
+    var REPO_NAME = '';
+    var FILE_PATH = 'quotes.json';
+    var BRANCH = 'main';
+
+    var MOODS = {
+      brave:    { emoji: '\uD83E\uDD81', label: 'brave' },
+      strong:   { emoji: '\uD83D\uDCAA', label: 'strong' },
+      kind:     { emoji: '\uD83C\uDF38', label: 'kind' },
+      dreamy:   { emoji: '\u2728',       label: 'dreamy' },
+      loved:    { emoji: '\uD83D\uDC96', label: 'loved' },
+      joyful:   { emoji: '\u2600\uFE0F', label: 'joyful' },
+      wise:     { emoji: '\uD83E\uDD89', label: 'wise' },
+      calm:     { emoji: '\uD83C\uDF3F', label: 'calm' },
+      fierce:   { emoji: '\uD83D\uDD25', label: 'fierce' },
+      hopeful:  { emoji: '\uD83C\uDF08', label: 'hopeful' },
+      playful:  { emoji: '\uD83E\uDD8B', label: 'playful' },
+      grateful: { emoji: '\uD83D\uDE4F', label: 'grateful' }
+    };
+
+    var selectedMood = '';
+
+    /* ========== INIT ========== */
+    (function init() {
+      // Auto-detect repo from current URL for GitHub Pages
+      detectRepo();
+
+      // Set today's date as default
+      var d = new Date();
+      var dateStr = d.getFullYear() + '-' +
+        String(d.getMonth() + 1).padStart(2, '0') + '-' +
+        String(d.getDate()).padStart(2, '0');
+      document.getElementById('fieldDate').value = dateStr;
+
+      // Build mood picker
+      buildMoodGrid();
+
+      // Check saved token
+      checkToken();
+
+      // Load recent quotes
+      loadRecent();
+    })();
+
+    /* ========== REPO DETECTION ========== */
+    function detectRepo() {
+      // Try to detect from GitHub Pages URL: <owner>.github.io/<repo>
+      var host = window.location.hostname;
+      var path = window.location.pathname;
+
+      if (host.endsWith('.github.io')) {
+        REPO_OWNER = host.replace('.github.io', '');
+        var parts = path.split('/').filter(Boolean);
+        if (parts.length > 0) {
+          REPO_NAME = parts[0];
+        }
+      }
+
+      // Also check localStorage override
+      var saved = localStorage.getItem('motivation_repo');
+      if (saved) {
+        try {
+          var parsed = JSON.parse(saved);
+          REPO_OWNER = parsed.owner;
+          REPO_NAME = parsed.name;
+        } catch (e) {}
+      }
+
+      // If still empty, try to read from the setup
+      if (!REPO_OWNER || !REPO_NAME) {
+        var savedOwner = localStorage.getItem('motivation_repo_owner');
+        var savedName = localStorage.getItem('motivation_repo_name');
+        if (savedOwner && savedName) {
+          REPO_OWNER = savedOwner;
+          REPO_NAME = savedName;
+        }
+      }
+    }
+
+    /* ========== MOOD GRID ========== */
+    function buildMoodGrid() {
+      var grid = document.getElementById('moodGrid');
+      var keys = Object.keys(MOODS);
+      keys.forEach(function(key) {
+        var m = MOODS[key];
+        var div = document.createElement('div');
+        div.className = 'mood-option';
+        div.innerHTML = '<span class="m-emoji">' + m.emoji + '</span><span class="m-label">' + m.label + '</span>';
+        div.onclick = function() {
+          // Deselect all
+          grid.querySelectorAll('.mood-option').forEach(function(el) { el.classList.remove('selected'); });
+          if (selectedMood === key) {
+            selectedMood = '';
+          } else {
+            selectedMood = key;
+            div.classList.add('selected');
+          }
+        };
+        grid.appendChild(div);
+      });
+    }
+
+    /* ========== TOKEN ========== */
+    function saveToken() {
+      var token = document.getElementById('tokenInput').value.trim();
+      if (!token) return;
+      localStorage.setItem('motivation_github_token', token);
+
+      // If we don't have repo info yet, try to detect from the token
+      if (!REPO_OWNER || !REPO_NAME) {
+        promptRepo();
+      }
+
+      checkToken();
+    }
+
+    function promptRepo() {
+      var owner = prompt('GitHub username (repo owner):', REPO_OWNER);
+      var name = prompt('Repository name:', REPO_NAME || 'Motivation');
+      if (owner && name) {
+        REPO_OWNER = owner;
+        REPO_NAME = name;
+        localStorage.setItem('motivation_repo_owner', owner);
+        localStorage.setItem('motivation_repo_name', name);
+      }
+    }
+
+    function getToken() {
+      return localStorage.getItem('motivation_github_token') || '';
+    }
+
+    function checkToken() {
+      var token = getToken();
+      var statusEl = document.getElementById('tokenStatus');
+      var inputEl = document.getElementById('tokenInput');
+
+      if (token) {
+        inputEl.value = token.substring(0, 8) + '...';
+        statusEl.innerHTML = '<span class="status-dot connected"></span> Connected' +
+          (REPO_OWNER ? ' \u00B7 ' + REPO_OWNER + '/' + REPO_NAME : '') +
+          ' <a href="#" onclick="clearToken(); return false;" style="font-size:0.72rem;color:#EF4444;margin-left:0.5rem;">Disconnect</a>';
+      } else {
+        statusEl.innerHTML = '<span class="status-dot disconnected"></span> Not connected';
+      }
+    }
+
+    function clearToken() {
+      localStorage.removeItem('motivation_github_token');
+      localStorage.removeItem('motivation_repo_owner');
+      localStorage.removeItem('motivation_repo_name');
+      document.getElementById('tokenInput').value = '';
+      REPO_OWNER = '';
+      REPO_NAME = '';
+      checkToken();
+    }
+
+    /* ========== LOAD RECENT ========== */
+    function loadRecent() {
+      fetch('quotes.json')
+        .then(function(res) { return res.json(); })
+        .then(function(quotes) {
+          var sorted = quotes.slice().sort(function(a, b) { return b.date.localeCompare(a.date); });
+          var recent = sorted.slice(0, 5);
+          var html = '';
+          recent.forEach(function(q) {
+            var mood = q.mood && MOODS[q.mood] ? MOODS[q.mood].emoji + ' ' : '';
+            html += '<div class="recent-item">' +
+              '<div class="r-date">' + q.date + '</div>' +
+              '<div class="r-quote">' + mood + '\u201C' + q.quote + '\u201D</div>' +
+              '<div class="r-author">\u2014 ' + q.author + '</div>' +
+            '</div>';
+          });
+          document.getElementById('recentList').innerHTML = html || '<p style="color:#B8A090;font-size:0.85rem;">No quotes yet.</p>';
+        })
+        .catch(function() {
+          document.getElementById('recentList').innerHTML = '<p style="color:#B8A090;font-size:0.85rem;">Could not load quotes.</p>';
+        });
+    }
+
+    /* ========== PUBLISH ========== */
+    function publishQuote() {
+      var token = getToken();
+      if (!token) {
+        showToast('Please save your GitHub token first.', 'error');
+        return;
+      }
+
+      if (!REPO_OWNER || !REPO_NAME) {
+        promptRepo();
+        if (!REPO_OWNER || !REPO_NAME) {
+          showToast('Please set your repo info.', 'error');
+          return;
+        }
+      }
+
+      var date = document.getElementById('fieldDate').value;
+      var quote = document.getElementById('fieldQuote').value.trim();
+      var author = document.getElementById('fieldAuthor').value.trim();
+      var note = document.getElementById('fieldNote').value.trim();
+
+      if (!date || !quote || !author) {
+        showToast('Date, quote, and author are required.', 'error');
+        return;
+      }
+
+      var newQuote = { date: date, quote: quote, author: author };
+      if (note) newQuote.note = note;
+      if (selectedMood) newQuote.mood = selectedMood;
+
+      var btn = document.getElementById('publishBtn');
+      btn.disabled = true;
+      btn.textContent = 'Publishing...';
+
+      // Fetch current file from GitHub API
+      var apiBase = 'https://api.github.com/repos/' + REPO_OWNER + '/' + REPO_NAME + '/contents/' + FILE_PATH;
+
+      fetch(apiBase + '?ref=' + BRANCH, {
+        headers: {
+          'Authorization': 'Bearer ' + token,
+          'Accept': 'application/vnd.github.v3+json'
+        }
+      })
+      .then(function(res) {
+        if (!res.ok) throw new Error('Could not fetch quotes file (HTTP ' + res.status + ')');
+        return res.json();
+      })
+      .then(function(fileData) {
+        // Decode current content
+        var content = atob(fileData.content.replace(/\n/g, ''));
+        var quotes = JSON.parse(content);
+
+        // Check for duplicate date
+        var existing = quotes.findIndex(function(q) { return q.date === date; });
+        if (existing !== -1) {
+          if (!confirm('A quote already exists for ' + date + '. Replace it?')) {
+            btn.disabled = false;
+            btn.textContent = 'Publish Quote';
+            return Promise.reject('cancelled');
+          }
+          quotes[existing] = newQuote;
+        } else {
+          // Insert in date order (newest first)
+          var inserted = false;
+          for (var i = 0; i < quotes.length; i++) {
+            if (date > quotes[i].date) {
+              quotes.splice(i, 0, newQuote);
+              inserted = true;
+              break;
+            }
+          }
+          if (!inserted) quotes.push(newQuote);
+        }
+
+        // Encode and push
+        var newContent = JSON.stringify(quotes, null, 2) + '\n';
+        var encoded = btoa(unescape(encodeURIComponent(newContent)));
+
+        return fetch(apiBase, {
+          method: 'PUT',
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Accept': 'application/vnd.github.v3+json',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            message: 'Add quote for ' + date,
+            content: encoded,
+            sha: fileData.sha,
+            branch: BRANCH
+          })
+        });
+      })
+      .then(function(res) {
+        if (res === undefined) return; // cancelled
+        if (!res.ok) throw new Error('Failed to push (HTTP ' + res.status + ')');
+        showToast('Quote published!', 'success');
+
+        // Reset form
+        document.getElementById('fieldQuote').value = '';
+        document.getElementById('fieldAuthor').value = '';
+        document.getElementById('fieldNote').value = '';
+        selectedMood = '';
+        document.querySelectorAll('.mood-option').forEach(function(el) { el.classList.remove('selected'); });
+
+        // Advance date by 1 day
+        var nextDate = new Date(date + 'T12:00:00');
+        nextDate.setDate(nextDate.getDate() + 1);
+        var nd = nextDate.getFullYear() + '-' +
+          String(nextDate.getMonth() + 1).padStart(2, '0') + '-' +
+          String(nextDate.getDate()).padStart(2, '0');
+        document.getElementById('fieldDate').value = nd;
+
+        btn.disabled = false;
+        btn.textContent = 'Publish Quote';
+
+        // Refresh recent list after a brief delay for GitHub to process
+        setTimeout(loadRecent, 2000);
+      })
+      .catch(function(err) {
+        if (err === 'cancelled') return;
+        console.error('Publish error:', err);
+        showToast('Error: ' + err.message, 'error');
+        btn.disabled = false;
+        btn.textContent = 'Publish Quote';
+      });
+    }
+
+    /* ========== TOAST ========== */
+    function showToast(msg, type) {
+      var el = document.getElementById('toast');
+      el.textContent = msg;
+      el.className = 'toast ' + type;
+      // Trigger show
+      requestAnimationFrame(function() {
+        el.classList.add('show');
+      });
+      setTimeout(function() {
+        el.classList.remove('show');
+      }, 3000);
+    }
+  </script>
+
+</body>
+</html>
