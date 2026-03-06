@@ -7,10 +7,10 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>Motivation</title>
 
-  <!-- Google Fonts: Playfair Display (expressive serif) + Nunito (warm rounded sans) -->
+  <!-- Google Fonts: Playfair Display + Nunito -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 
   <!-- html2canvas for PNG download -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -30,49 +30,149 @@
 
     body {
       font-family: 'Nunito', sans-serif;
-      background: #FFF8F3;
       color: #3D2C2C;
       min-height: 100vh;
       overflow-x: hidden;
+      /* Warm animated gradient background */
+      background: linear-gradient(135deg, #FFF5EE 0%, #FFE4D6 25%, #FFDEE9 50%, #E8D5F5 75%, #D4E5FF 100%);
+      background-size: 400% 400%;
+      animation: bgShift 20s ease infinite;
+    }
+
+    @keyframes bgShift {
+      0%, 100% { background-position: 0% 50%; }
+      25% { background-position: 100% 0%; }
+      50% { background-position: 100% 100%; }
+      75% { background-position: 0% 100%; }
+    }
+
+    /* ========== FLOATING SPARKLES ========== */
+    .sparkles {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      overflow: hidden;
+    }
+
+    .sparkle {
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0;
+      animation: sparkleFloat linear infinite;
+    }
+
+    @keyframes sparkleFloat {
+      0% {
+        opacity: 0;
+        transform: translateY(100vh) scale(0);
+      }
+      10% {
+        opacity: 0.7;
+      }
+      90% {
+        opacity: 0.7;
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-20vh) scale(1);
+      }
+    }
+
+    /* ========== MAIN CONTENT WRAPPER ========== */
+    .content {
+      position: relative;
+      z-index: 1;
     }
 
     /* ========== HEADER ========== */
     .header {
       text-align: center;
-      padding: 2rem 1rem 1rem;
+      padding: 2rem 1rem 0.5rem;
     }
 
     .header h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 2.2rem;
+      font-size: 2.6rem;
       font-weight: 700;
-      background: linear-gradient(135deg, #E8756A, #F4A261, #E9C46A);
+      background: linear-gradient(135deg, #FF6B6B, #FF8E53, #FFBD39);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+      filter: drop-shadow(0 2px 4px rgba(255, 107, 107, 0.2));
     }
 
     .header .subtitle {
-      font-size: 0.85rem;
-      color: #B08968;
-      margin-top: 0.25rem;
-      letter-spacing: 0.05em;
+      font-size: 0.9rem;
+      color: #C0856F;
+      margin-top: 0.3rem;
+      letter-spacing: 0.04em;
+      font-weight: 600;
+    }
+
+    /* ========== STREAK BADGE ========== */
+    .streak-badge {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      gap: 0.4rem;
+      margin: 0.8rem auto 0;
+      padding: 0.4rem 1rem;
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 50px;
+      width: fit-content;
+      box-shadow: 0 2px 12px rgba(255, 107, 107, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .streak-badge.show {
+      display: flex;
+    }
+
+    .streak-flame {
+      font-size: 1.1rem;
+      animation: flamePulse 1.5s ease-in-out infinite;
+    }
+
+    @keyframes flamePulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    .streak-text {
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #E85D4A;
     }
 
     /* ========== QUOTE CARD CONTAINER ========== */
     .card-wrapper {
       display: flex;
       justify-content: center;
-      padding: 0.5rem 1rem 1.5rem;
+      padding: 1rem 1rem 1.5rem;
+      animation: cardEnter 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes cardEnter {
+      0% {
+        opacity: 0;
+        transform: translateY(40px) scale(0.92);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     /* ========== QUOTE CARD (the downloadable element) ========== */
     .quote-card {
       position: relative;
       width: 100%;
-      max-width: 420px;
+      max-width: 400px;
       min-height: 480px;
-      border-radius: 24px;
+      border-radius: 28px;
       padding: 2.5rem 2rem 2rem;
       display: flex;
       flex-direction: column;
@@ -80,33 +180,34 @@
       align-items: center;
       text-align: center;
       overflow: hidden;
-      /* Shadow for visual depth */
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+      box-shadow:
+        0 20px 60px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(255, 255, 255, 0.1) inset;
     }
 
-    /* Decorative circles layered behind content */
+    /* Decorative circles */
     .quote-card::before,
     .quote-card::after {
       content: '';
       position: absolute;
       border-radius: 50%;
-      opacity: 0.12;
+      opacity: 0.15;
     }
 
     .quote-card::before {
-      width: 260px;
-      height: 260px;
+      width: 280px;
+      height: 280px;
       background: white;
-      top: -60px;
-      right: -50px;
+      top: -70px;
+      right: -60px;
     }
 
     .quote-card::after {
-      width: 180px;
-      height: 180px;
+      width: 200px;
+      height: 200px;
       background: white;
-      bottom: -30px;
-      left: -40px;
+      bottom: -40px;
+      left: -50px;
     }
 
     .quote-card .card-content {
@@ -115,32 +216,32 @@
       width: 100%;
     }
 
-    /* Big decorative opening quote mark */
     .quote-card .deco-quote {
       font-family: 'Playfair Display', serif;
-      font-size: 5rem;
+      font-size: 5.5rem;
       line-height: 1;
-      opacity: 0.18;
+      opacity: 0.2;
       color: #fff;
-      margin-bottom: -1.5rem;
+      margin-bottom: -1.8rem;
     }
 
     .quote-card .quote-text {
       font-family: 'Playfair Display', serif;
-      font-size: 1.55rem;
+      font-size: 1.5rem;
       font-weight: 500;
-      line-height: 1.45;
+      line-height: 1.5;
       color: #fff;
       margin-bottom: 1.2rem;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.1);
+      text-shadow: 0 2px 8px rgba(0,0,0,0.12);
     }
 
     .quote-card .quote-author {
       font-family: 'Nunito', sans-serif;
       font-size: 0.95rem;
-      font-weight: 600;
-      color: rgba(255,255,255,0.85);
+      font-weight: 700;
+      color: rgba(255,255,255,0.88);
       margin-bottom: 1.2rem;
+      letter-spacing: 0.02em;
     }
 
     .quote-card .quote-note {
@@ -155,177 +256,229 @@
     .quote-card .quote-date {
       font-family: 'Nunito', sans-serif;
       font-size: 0.75rem;
-      color: rgba(255,255,255,0.55);
+      color: rgba(255,255,255,0.5);
       letter-spacing: 0.08em;
     }
 
-    /* ========== GRADIENT THEMES (rotate by date) ========== */
-    .theme-0 { background: linear-gradient(145deg, #E8756A 0%, #F4A261 50%, #E9C46A 100%); }
-    .theme-1 { background: linear-gradient(145deg, #264653 0%, #2A9D8F 50%, #6AB29B 100%); }
-    .theme-2 { background: linear-gradient(145deg, #D4648A 0%, #E88DAB 50%, #F4C2C2 100%); }
-    .theme-3 { background: linear-gradient(145deg, #6C63FF 0%, #A594F9 50%, #C8B6FF 100%); }
-    .theme-4 { background: linear-gradient(145deg, #E07A5F 0%, #F2CC8F 50%, #F5E6CA 100%); }
-    .theme-5 { background: linear-gradient(145deg, #355070 0%, #6D597A 50%, #B56576 100%); }
-    .theme-6 { background: linear-gradient(145deg, #606C38 0%, #99AA49 50%, #FEFAE0 100%); }
-    .theme-7 { background: linear-gradient(145deg, #BC6C25 0%, #DDA15E 50%, #FEFAE0 100%); }
+    /* Small heart on the card */
+    .quote-card .card-heart {
+      position: absolute;
+      bottom: 12px;
+      right: 16px;
+      font-size: 0.9rem;
+      opacity: 0.3;
+      z-index: 1;
+    }
 
-    /* Adjust text color for lighter themes */
-    .theme-4 .quote-text,
-    .theme-6 .quote-text,
-    .theme-7 .quote-text {
-      color: #3D2C2C;
-      text-shadow: none;
-    }
-    .theme-4 .deco-quote,
-    .theme-6 .deco-quote,
-    .theme-7 .deco-quote {
-      color: #3D2C2C;
-    }
-    .theme-4 .quote-author,
-    .theme-6 .quote-author,
-    .theme-7 .quote-author {
-      color: rgba(61,44,44,0.75);
-    }
-    .theme-4 .quote-note,
-    .theme-6 .quote-note,
-    .theme-7 .quote-note {
-      color: rgba(61,44,44,0.65);
-    }
-    .theme-4 .quote-date,
-    .theme-6 .quote-date,
-    .theme-7 .quote-date {
-      color: rgba(61,44,44,0.45);
-    }
+    /* ========== VIBRANT GRADIENT THEMES ========== */
+    .theme-0  { background: linear-gradient(145deg, #FF6B6B 0%, #FF8E53 50%, #FFBD39 100%); }
+    .theme-1  { background: linear-gradient(145deg, #0EA5E9 0%, #06B6D4 50%, #34D399 100%); }
+    .theme-2  { background: linear-gradient(145deg, #F472B6 0%, #FB7185 50%, #FDA4AF 100%); }
+    .theme-3  { background: linear-gradient(145deg, #8B5CF6 0%, #A78BFA 50%, #C4B5FD 100%); }
+    .theme-4  { background: linear-gradient(145deg, #F97316 0%, #FB923C 50%, #FBBF24 100%); }
+    .theme-5  { background: linear-gradient(145deg, #EC4899 0%, #8B5CF6 50%, #6366F1 100%); }
+    .theme-6  { background: linear-gradient(145deg, #10B981 0%, #34D399 50%, #6EE7B7 100%); }
+    .theme-7  { background: linear-gradient(145deg, #F43F5E 0%, #E11D48 40%, #BE123C 100%); }
+    .theme-8  { background: linear-gradient(145deg, #3B82F6 0%, #6366F1 50%, #8B5CF6 100%); }
+    .theme-9  { background: linear-gradient(145deg, #14B8A6 0%, #2DD4BF 50%, #5EEAD4 100%); }
+    .theme-10 { background: linear-gradient(145deg, #E879A8 0%, #C084FC 50%, #818CF8 100%); }
+    .theme-11 { background: linear-gradient(145deg, #FF6B6B 0%, #EE5A9D 50%, #C084FC 100%); }
 
     /* ========== SAVE BUTTON ========== */
     .save-btn {
       display: block;
-      margin: 0 auto 2rem;
-      padding: 0.85rem 2rem;
+      margin: 0 auto 1.5rem;
+      padding: 0.9rem 2.2rem;
       border: none;
       border-radius: 50px;
-      background: linear-gradient(135deg, #E8756A, #F4A261);
+      background: linear-gradient(135deg, #FF6B6B, #FF8E53);
       color: #fff;
       font-family: 'Nunito', sans-serif;
       font-size: 1rem;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
-      box-shadow: 0 4px 15px rgba(232, 117, 106, 0.35);
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      box-shadow: 0 6px 20px rgba(255, 107, 107, 0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
       -webkit-tap-highlight-color: transparent;
+      letter-spacing: 0.02em;
     }
 
     .save-btn:active {
-      transform: scale(0.96);
-      box-shadow: 0 2px 8px rgba(232, 117, 106, 0.3);
+      transform: scale(0.95);
+      box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3);
     }
 
-    /* ========== ARCHIVE SECTION ========== */
-    .archive-section {
-      max-width: 480px;
+    /* ========== SECTION DIVIDER ========== */
+    .section-divider {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      max-width: 460px;
+      margin: 0.5rem auto 1.2rem;
+      padding: 0 1.5rem;
+    }
+
+    .section-divider .line {
+      flex: 1;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(200, 160, 140, 0.3), transparent);
+    }
+
+    .section-divider .icon {
+      font-size: 1rem;
+      opacity: 0.5;
+    }
+
+    /* ========== CALENDAR SECTION ========== */
+    .calendar-section {
+      max-width: 460px;
       margin: 0 auto;
       padding: 0 1rem 3rem;
     }
 
-    .archive-toggle {
+    .calendar-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.8rem;
+      padding: 0 0.2rem;
+    }
+
+    .calendar-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #5D4037;
+    }
+
+    .calendar-nav {
+      display: flex;
+      gap: 0.3rem;
+    }
+
+    .calendar-nav button {
+      width: 34px;
+      height: 34px;
+      border: none;
+      border-radius: 10px;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      font-size: 0.9rem;
+      color: #5D4037;
+      cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 0.5rem;
-      width: 100%;
-      padding: 0.9rem;
-      border: 2px solid #F0DDD1;
-      border-radius: 16px;
-      background: transparent;
-      font-family: 'Nunito', sans-serif;
-      font-size: 1rem;
+      transition: background 0.2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .calendar-nav button:active {
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .calendar-grid {
+      background: rgba(255, 255, 255, 0.55);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-radius: 20px;
+      padding: 1rem;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .calendar-weekdays {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
+      margin-bottom: 0.4rem;
+    }
+
+    .calendar-weekdays span {
+      text-align: center;
+      font-size: 0.7rem;
       font-weight: 700;
       color: #B08968;
-      cursor: pointer;
-      transition: background 0.2s ease;
-      -webkit-tap-highlight-color: transparent;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.3rem 0;
     }
 
-    .archive-toggle:hover {
-      background: #FFF0E6;
+    .calendar-days {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 4px;
     }
 
-    .archive-toggle .arrow {
-      transition: transform 0.3s ease;
-      font-size: 0.8rem;
-    }
-
-    .archive-toggle.open .arrow {
-      transform: rotate(180deg);
-    }
-
-    .archive-list {
-      display: none;
-      margin-top: 1rem;
-    }
-
-    .archive-list.show {
-      display: block;
-    }
-
-    .archive-item {
+    .calendar-day {
+      aspect-ratio: 1;
       display: flex;
       align-items: center;
-      gap: 1rem;
-      padding: 1rem;
-      margin-bottom: 0.6rem;
-      border-radius: 14px;
-      background: #fff;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-      cursor: pointer;
-      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      justify-content: center;
+      border-radius: 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #A09080;
+      position: relative;
+      cursor: default;
+      transition: transform 0.15s ease;
       -webkit-tap-highlight-color: transparent;
     }
 
-    .archive-item:active {
-      transform: scale(0.98);
+    .calendar-day.empty {
+      visibility: hidden;
     }
 
-    .archive-item .color-dot {
-      width: 40px;
-      height: 40px;
-      border-radius: 12px;
-      flex-shrink: 0;
+    .calendar-day.has-quote {
+      color: #fff;
+      cursor: pointer;
+      font-weight: 700;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
     }
 
-    .archive-item .item-info {
-      flex: 1;
-      min-width: 0;
+    .calendar-day.has-quote:active {
+      transform: scale(0.9);
     }
 
-    .archive-item .item-date {
-      font-size: 0.75rem;
-      color: #B08968;
-      font-weight: 600;
-      margin-bottom: 0.15rem;
+    .calendar-day.today {
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+      outline: 2.5px solid rgba(255, 255, 255, 0.8);
+      outline-offset: 1px;
     }
 
-    .archive-item .item-preview {
-      font-family: 'Playfair Display', serif;
-      font-size: 0.9rem;
-      color: #3D2C2C;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    .calendar-day.today::after {
+      content: '';
+      position: absolute;
+      bottom: 3px;
+      width: 4px;
+      height: 4px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.9);
     }
 
-    /* ========== MODAL OVERLAY (for viewing past quotes) ========== */
+    .calendar-day.future {
+      color: #D5C8BE;
+    }
+
+    /* ========== MODAL OVERLAY ========== */
     .modal-overlay {
       display: none;
       position: fixed;
       inset: 0;
       z-index: 1000;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+      background: rgba(0, 0, 0, 0.55);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       justify-content: center;
       align-items: center;
       padding: 1.5rem;
+      animation: modalFadeIn 0.3s ease;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
     }
 
     .modal-overlay.show {
@@ -334,20 +487,32 @@
 
     .modal-inner {
       width: 100%;
-      max-width: 420px;
+      max-width: 400px;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 1rem;
+      animation: modalSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes modalSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
     }
 
     .modal-close {
       align-self: flex-end;
-      background: rgba(255,255,255,0.25);
+      background: rgba(255, 255, 255, 0.2);
       border: none;
       border-radius: 50%;
-      width: 36px;
-      height: 36px;
+      width: 38px;
+      height: 38px;
       font-size: 1.2rem;
       color: #fff;
       cursor: pointer;
@@ -355,87 +520,126 @@
       align-items: center;
       justify-content: center;
       -webkit-tap-highlight-color: transparent;
+      transition: background 0.2s;
+    }
+
+    .modal-close:active {
+      background: rgba(255, 255, 255, 0.35);
     }
 
     .modal-save-btn {
-      padding: 0.75rem 1.8rem;
+      padding: 0.8rem 2rem;
       border: none;
       border-radius: 50px;
-      background: rgba(255,255,255,0.25);
+      background: rgba(255, 255, 255, 0.22);
       color: #fff;
       font-family: 'Nunito', sans-serif;
       font-size: 0.95rem;
-      font-weight: 700;
+      font-weight: 800;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
+      letter-spacing: 0.02em;
+      transition: background 0.2s;
+    }
+
+    .modal-save-btn:active {
+      background: rgba(255, 255, 255, 0.35);
     }
 
     /* ========== LOADING STATE ========== */
     .loading {
       text-align: center;
       padding: 4rem 1rem;
-      color: #B08968;
+      color: #C0856F;
       font-size: 1.1rem;
+      font-weight: 600;
     }
 
     /* ========== RESPONSIVE ========== */
     @media (min-width: 600px) {
-      .header h1 { font-size: 2.8rem; }
+      .header h1 { font-size: 3rem; }
       .quote-card { min-height: 520px; padding: 3rem 2.5rem 2.5rem; }
-      .quote-card .quote-text { font-size: 1.75rem; }
+      .quote-card .quote-text { font-size: 1.7rem; }
     }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header class="header">
-    <h1>Motivation</h1>
-    <p class="subtitle">a little note from Dad, every day</p>
-  </header>
+  <!-- Floating sparkles background -->
+  <div class="sparkles" id="sparkles"></div>
 
-  <!-- Loading indicator -->
-  <div class="loading" id="loading">Loading today's message...</div>
+  <div class="content">
+    <!-- Header -->
+    <header class="header">
+      <h1>Motivation</h1>
+      <p class="subtitle">a little note from Dad, every day</p>
+      <div class="streak-badge" id="streakBadge">
+        <span class="streak-flame">&#x1F525;</span>
+        <span class="streak-text" id="streakText"></span>
+      </div>
+    </header>
 
-  <!-- Main quote card (today's or most recent) -->
-  <div class="card-wrapper" id="mainCardWrapper" style="display:none;">
-    <div class="quote-card" id="mainCard">
-      <div class="card-content">
-        <div class="deco-quote">"</div>
-        <p class="quote-text" id="mainQuote"></p>
-        <p class="quote-author" id="mainAuthor"></p>
-        <p class="quote-note" id="mainNote"></p>
-        <p class="quote-date" id="mainDate"></p>
+    <!-- Loading indicator -->
+    <div class="loading" id="loading">Loading today's message...</div>
+
+    <!-- Main quote card -->
+    <div class="card-wrapper" id="mainCardWrapper" style="display:none;">
+      <div class="quote-card" id="mainCard">
+        <div class="card-content">
+          <div class="deco-quote">&ldquo;</div>
+          <p class="quote-text" id="mainQuote"></p>
+          <p class="quote-author" id="mainAuthor"></p>
+          <p class="quote-note" id="mainNote"></p>
+          <p class="quote-date" id="mainDate"></p>
+        </div>
+        <span class="card-heart">&hearts;</span>
       </div>
     </div>
-  </div>
 
-  <!-- Save button -->
-  <button class="save-btn" id="saveBtn" style="display:none;" onclick="saveCard('mainCard', currentDate)">
-    Save to Phone
-  </button>
-
-  <!-- Archive section -->
-  <section class="archive-section" id="archiveSection" style="display:none;">
-    <button class="archive-toggle" id="archiveToggle" onclick="toggleArchive()">
-      <span>Previous Messages</span>
-      <span class="arrow">▼</span>
+    <!-- Save button -->
+    <button class="save-btn" id="saveBtn" style="display:none;" onclick="saveCard('mainCard', currentDate)">
+      Save to Phone
     </button>
-    <div class="archive-list" id="archiveList"></div>
-  </section>
+
+    <!-- Divider -->
+    <div class="section-divider" id="sectionDivider" style="display:none;">
+      <div class="line"></div>
+      <span class="icon">&#x1F4C5;</span>
+      <div class="line"></div>
+    </div>
+
+    <!-- Calendar archive -->
+    <section class="calendar-section" id="calendarSection" style="display:none;">
+      <div class="calendar-header">
+        <span class="calendar-title" id="calendarTitle"></span>
+        <div class="calendar-nav">
+          <button onclick="changeMonth(-1)" aria-label="Previous month">&#x2039;</button>
+          <button onclick="changeMonth(1)" aria-label="Next month">&#x203A;</button>
+        </div>
+      </div>
+      <div class="calendar-grid">
+        <div class="calendar-weekdays">
+          <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
+          <span>Thu</span><span>Fri</span><span>Sat</span>
+        </div>
+        <div class="calendar-days" id="calendarDays"></div>
+      </div>
+    </section>
+  </div>
 
   <!-- Modal for viewing past quotes -->
   <div class="modal-overlay" id="modal" onclick="closeModal(event)">
     <div class="modal-inner">
-      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+      <button class="modal-close" onclick="closeModalDirect()" aria-label="Close">&times;</button>
       <div class="quote-card" id="modalCard">
         <div class="card-content">
-          <div class="deco-quote">"</div>
+          <div class="deco-quote">&ldquo;</div>
           <p class="quote-text" id="modalQuote"></p>
           <p class="quote-author" id="modalAuthor"></p>
           <p class="quote-note" id="modalNote"></p>
           <p class="quote-date" id="modalDate"></p>
         </div>
+        <span class="card-heart">&hearts;</span>
       </div>
       <button class="modal-save-btn" onclick="saveCard('modalCard', modalCurrentDate)">
         Save This Quote
@@ -445,52 +649,108 @@
 
   <script>
     /* ========== GLOBALS ========== */
-    const THEME_COUNT = 8;
-    let currentDate = '';      // date string for the main card
-    let modalCurrentDate = ''; // date string for the modal card
-    let allQuotes = [];
+    var THEME_COUNT = 12;
+    var currentDate = '';
+    var modalCurrentDate = '';
+    var allQuotes = [];
+    var quotesByDate = {};
+    var calendarYear = 0;
+    var calendarMonth = 0; // 0-indexed
+
+    /* ========== SPARKLE GENERATOR ========== */
+    (function createSparkles() {
+      var container = document.getElementById('sparkles');
+      var colors = [
+        'rgba(255, 107, 107, 0.5)',
+        'rgba(255, 189, 57, 0.5)',
+        'rgba(240, 128, 168, 0.45)',
+        'rgba(168, 130, 255, 0.4)',
+        'rgba(52, 211, 153, 0.4)',
+        'rgba(96, 165, 250, 0.4)'
+      ];
+      for (var i = 0; i < 18; i++) {
+        var dot = document.createElement('div');
+        dot.className = 'sparkle';
+        var size = Math.random() * 8 + 4;
+        dot.style.width = size + 'px';
+        dot.style.height = size + 'px';
+        dot.style.left = Math.random() * 100 + '%';
+        dot.style.background = colors[i % colors.length];
+        dot.style.animationDuration = (Math.random() * 12 + 10) + 's';
+        dot.style.animationDelay = (Math.random() * 15) + 's';
+        container.appendChild(dot);
+      }
+    })();
 
     /* ========== HELPERS ========== */
-
-    // Get today's date as YYYY-MM-DD in local time
     function getTodayStr() {
-      const d = new Date();
+      var d = new Date();
       return d.getFullYear() + '-' +
         String(d.getMonth() + 1).padStart(2, '0') + '-' +
         String(d.getDate()).padStart(2, '0');
     }
 
-    // Pick a theme index based on the date string (rotates through themes)
     function themeForDate(dateStr) {
-      const parts = dateStr.split('-');
-      const day = parseInt(parts[2], 10);
-      const month = parseInt(parts[1], 10);
-      return (day + month) % THEME_COUNT;
+      var parts = dateStr.split('-');
+      var day = parseInt(parts[2], 10);
+      var month = parseInt(parts[1], 10);
+      return (day + month * 3) % THEME_COUNT;
     }
 
-    // Format YYYY-MM-DD into a friendly string like "March 5, 2025"
     function formatDate(dateStr) {
-      const months = ['January','February','March','April','May','June',
-                      'July','August','September','October','November','December'];
-      const parts = dateStr.split('-');
-      const m = parseInt(parts[1], 10) - 1;
-      const d = parseInt(parts[2], 10);
+      var months = ['January','February','March','April','May','June',
+                    'July','August','September','October','November','December'];
+      var parts = dateStr.split('-');
+      var m = parseInt(parts[1], 10) - 1;
+      var d = parseInt(parts[2], 10);
       return months[m] + ' ' + d + ', ' + parts[0];
     }
 
-    /* ========== RENDER FUNCTIONS ========== */
+    function formatMonthYear(year, month) {
+      var months = ['January','February','March','April','May','June',
+                    'July','August','September','October','November','December'];
+      return months[month] + ' ' + year;
+    }
 
-    // Populate a card element with quote data and apply theme
+    function padDate(y, m, d) {
+      return y + '-' + String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
+    }
+
+    /* ========== STREAK CALCULATOR ========== */
+    function calculateStreak(quotes) {
+      if (quotes.length === 0) return 0;
+      // Sort dates descending
+      var dates = quotes.map(function(q) { return q.date; }).sort().reverse();
+      var today = getTodayStr();
+      // Start from today or most recent
+      var startIdx = dates.indexOf(today);
+      if (startIdx === -1) startIdx = 0;
+
+      var streak = 1;
+      for (var i = startIdx; i < dates.length - 1; i++) {
+        var curr = new Date(dates[i] + 'T12:00:00');
+        var prev = new Date(dates[i + 1] + 'T12:00:00');
+        var diff = (curr - prev) / (1000 * 60 * 60 * 24);
+        if (Math.round(diff) === 1) {
+          streak++;
+        } else {
+          break;
+        }
+      }
+      return streak;
+    }
+
+    /* ========== RENDER CARD ========== */
     function renderCard(cardEl, quote) {
-      const themeIdx = themeForDate(quote.date);
-      // Remove any existing theme class
-      cardEl.className = cardEl.className.replace(/theme-\d/g, '').trim();
+      var themeIdx = themeForDate(quote.date);
+      cardEl.className = cardEl.className.replace(/theme-\d+/g, '').trim();
+      cardEl.classList.add('quote-card');
       cardEl.classList.add('theme-' + themeIdx);
 
-      cardEl.querySelector('.quote-text').textContent = '"' + quote.quote + '"';
-      cardEl.querySelector('.quote-author').textContent = '— ' + quote.author;
+      cardEl.querySelector('.quote-text').textContent = '\u201C' + quote.quote + '\u201D';
+      cardEl.querySelector('.quote-author').textContent = '\u2014 ' + quote.author;
 
-      const noteEl = cardEl.querySelector('.quote-note');
+      var noteEl = cardEl.querySelector('.quote-note');
       if (quote.note) {
         noteEl.textContent = quote.note;
         noteEl.style.display = '';
@@ -501,52 +761,70 @@
       cardEl.querySelector('.quote-date').textContent = formatDate(quote.date);
     }
 
-    // Build the archive list items
-    function renderArchive(quotes) {
-      const list = document.getElementById('archiveList');
-      // All quotes except the one shown as the main card
-      const past = quotes.filter(q => q.date !== currentDate);
-      if (past.length === 0) {
-        document.getElementById('archiveSection').style.display = 'none';
-        return;
+    /* ========== CALENDAR ========== */
+    function renderCalendar() {
+      var title = document.getElementById('calendarTitle');
+      var grid = document.getElementById('calendarDays');
+      var today = getTodayStr();
+
+      title.textContent = formatMonthYear(calendarYear, calendarMonth);
+      grid.innerHTML = '';
+
+      // First day of month and total days
+      var firstDay = new Date(calendarYear, calendarMonth, 1).getDay();
+      var daysInMonth = new Date(calendarYear, calendarMonth + 1, 0).getDate();
+
+      // Empty cells for offset
+      for (var e = 0; e < firstDay; e++) {
+        var empty = document.createElement('div');
+        empty.className = 'calendar-day empty';
+        grid.appendChild(empty);
       }
 
-      document.getElementById('archiveSection').style.display = '';
-      list.innerHTML = '';
+      var todayDate = new Date();
+      todayDate.setHours(0, 0, 0, 0);
 
-      past.forEach(function(q, idx) {
-        const item = document.createElement('div');
-        item.className = 'archive-item';
-        item.onclick = function() { openModal(q); };
+      for (var d = 1; d <= daysInMonth; d++) {
+        var cell = document.createElement('div');
+        cell.className = 'calendar-day';
+        cell.textContent = d;
 
-        const dot = document.createElement('div');
-        dot.className = 'color-dot theme-' + themeForDate(q.date);
-        item.appendChild(dot);
+        var dateStr = padDate(calendarYear, calendarMonth, d);
+        var cellDate = new Date(calendarYear, calendarMonth, d);
 
-        const info = document.createElement('div');
-        info.className = 'item-info';
+        if (cellDate > todayDate) {
+          cell.classList.add('future');
+        }
 
-        const dateP = document.createElement('p');
-        dateP.className = 'item-date';
-        dateP.textContent = formatDate(q.date);
-        info.appendChild(dateP);
+        if (dateStr === today) {
+          cell.classList.add('today');
+        }
 
-        const preview = document.createElement('p');
-        preview.className = 'item-preview';
-        preview.textContent = '"' + q.quote + '"';
-        info.appendChild(preview);
+        if (quotesByDate[dateStr]) {
+          cell.classList.add('has-quote');
+          cell.classList.add('theme-' + themeForDate(dateStr));
+          (function(ds) {
+            cell.onclick = function() {
+              if (ds === currentDate) return; // already showing
+              openModal(quotesByDate[ds]);
+            };
+          })(dateStr);
+        }
 
-        item.appendChild(info);
-        list.appendChild(item);
-      });
+        grid.appendChild(cell);
+      }
     }
 
-    /* ========== ARCHIVE TOGGLE ========== */
-    function toggleArchive() {
-      const btn = document.getElementById('archiveToggle');
-      const list = document.getElementById('archiveList');
-      btn.classList.toggle('open');
-      list.classList.toggle('show');
+    function changeMonth(delta) {
+      calendarMonth += delta;
+      if (calendarMonth < 0) {
+        calendarMonth = 11;
+        calendarYear--;
+      } else if (calendarMonth > 11) {
+        calendarMonth = 0;
+        calendarYear++;
+      }
+      renderCalendar();
     }
 
     /* ========== MODAL ========== */
@@ -568,13 +846,12 @@
       document.body.style.overflow = '';
     }
 
-    /* ========== SAVE TO PHONE (html2canvas) ========== */
+    /* ========== SAVE TO PHONE ========== */
     function saveCard(cardId, dateStr) {
       var card = document.getElementById(cardId);
       html2canvas(card, {
         scale: 2,
         backgroundColor: null,
-        borderRadius: 24,
         useCORS: true
       }).then(function(canvas) {
         var link = document.createElement('a');
@@ -584,17 +861,21 @@
       });
     }
 
-    /* ========== INIT: FETCH QUOTES & RENDER ========== */
+    /* ========== INIT ========== */
     fetch('quotes.json')
       .then(function(res) { return res.json(); })
       .then(function(quotes) {
         allQuotes = quotes;
         var today = getTodayStr();
 
-        // Find today's quote or fall back to the most recent
-        var todayQuote = quotes.find(function(q) { return q.date === today; });
+        // Build lookup
+        quotes.forEach(function(q) {
+          quotesByDate[q.date] = q;
+        });
+
+        // Find today's quote or most recent
+        var todayQuote = quotesByDate[today];
         if (!todayQuote) {
-          // Sort descending and take the first (most recent)
           var sorted = quotes.slice().sort(function(a, b) {
             return b.date.localeCompare(a.date);
           });
@@ -609,8 +890,23 @@
         document.getElementById('mainCardWrapper').style.display = '';
         document.getElementById('saveBtn').style.display = '';
 
-        // Render archive
-        renderArchive(quotes);
+        // Streak
+        var streak = calculateStreak(quotes);
+        if (streak >= 2) {
+          document.getElementById('streakText').textContent = streak + ' day streak!';
+          document.getElementById('streakBadge').classList.add('show');
+        }
+
+        // Calendar — start on current month
+        var now = new Date();
+        calendarYear = now.getFullYear();
+        calendarMonth = now.getMonth();
+
+        if (quotes.length > 1) {
+          document.getElementById('sectionDivider').style.display = '';
+          document.getElementById('calendarSection').style.display = '';
+          renderCalendar();
+        }
       })
       .catch(function(err) {
         document.getElementById('loading').textContent =
