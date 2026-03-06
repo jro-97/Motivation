@@ -806,6 +806,9 @@
       <button class="fav-btn" id="favBtn" onclick="toggleFavorite(currentDate)" aria-label="Favorite">
         <span id="favIcon">&#x2661;</span>
       </button>
+      <button class="fav-btn" id="shareBtn" onclick="shareQuote(currentDate)" aria-label="Share">
+        <span style="font-size:1.2rem;">&#x1F4E4;</span>
+      </button>
     </div>
 
     <!-- Divider -->
@@ -1109,6 +1112,30 @@
         link.href = canvas.toDataURL('image/png');
         link.click();
       });
+    }
+
+    /* ========== SHARE ========== */
+    function shareQuote(dateStr) {
+      var q = quotesByDate[dateStr];
+      if (!q) return;
+
+      var url = window.location.origin + window.location.pathname + '?date=' + dateStr;
+      var text = '\u201C' + q.quote + '\u201D \u2014 ' + q.author;
+
+      if (navigator.share) {
+        navigator.share({ title: 'Motivation', text: text, url: url });
+      } else {
+        // Fallback: copy link to clipboard
+        navigator.clipboard.writeText(url).then(function() {
+          var btn = document.getElementById('shareBtn');
+          btn.style.background = 'linear-gradient(135deg, #10B981, #34D399)';
+          btn.style.borderColor = 'transparent';
+          setTimeout(function() {
+            btn.style.background = '';
+            btn.style.borderColor = '';
+          }, 1500);
+        });
+      }
     }
 
     /* ========== FAVORITES ========== */
