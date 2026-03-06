@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <title>Motivation</title>
+
+  <!-- Google Fonts: Playfair Display (expressive serif) + Nunito (warm rounded sans) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <!-- html2canvas for PNG download -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+  <style>
+    /* ========== RESET & BASE ========== */
+    *, *::before, *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html {
+      font-size: 16px;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: #FFF8F3;
+      color: #3D2C2C;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ========== HEADER ========== */
+    .header {
+      text-align: center;
+      padding: 2rem 1rem 1rem;
+    }
+
+    .header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #E8756A, #F4A261, #E9C46A);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header .subtitle {
+      font-size: 0.85rem;
+      color: #B08968;
+      margin-top: 0.25rem;
+      letter-spacing: 0.05em;
+    }
+
+    /* ========== QUOTE CARD CONTAINER ========== */
+    .card-wrapper {
+      display: flex;
+      justify-content: center;
+      padding: 0.5rem 1rem 1.5rem;
+    }
+
+    /* ========== QUOTE CARD (the downloadable element) ========== */
+    .quote-card {
+      position: relative;
+      width: 100%;
+      max-width: 420px;
+      min-height: 480px;
+      border-radius: 24px;
+      padding: 2.5rem 2rem 2rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      overflow: hidden;
+      /* Shadow for visual depth */
+      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+    }
+
+    /* Decorative circles layered behind content */
+    .quote-card::before,
+    .quote-card::after {
+      content: '';
+      position: absolute;
+      border-radius: 50%;
+      opacity: 0.12;
+    }
+
+    .quote-card::before {
+      width: 260px;
+      height: 260px;
+      background: white;
+      top: -60px;
+      right: -50px;
+    }
+
+    .quote-card::after {
+      width: 180px;
+      height: 180px;
+      background: white;
+      bottom: -30px;
+      left: -40px;
+    }
+
+    .quote-card .card-content {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+    }
+
+    /* Big decorative opening quote mark */
+    .quote-card .deco-quote {
+      font-family: 'Playfair Display', serif;
+      font-size: 5rem;
+      line-height: 1;
+      opacity: 0.18;
+      color: #fff;
+      margin-bottom: -1.5rem;
+    }
+
+    .quote-card .quote-text {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem;
+      font-weight: 500;
+      line-height: 1.45;
+      color: #fff;
+      margin-bottom: 1.2rem;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.1);
+    }
+
+    .quote-card .quote-author {
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.85);
+      margin-bottom: 1.2rem;
+    }
+
+    .quote-card .quote-note {
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.85rem;
+      font-style: italic;
+      color: rgba(255,255,255,0.78);
+      margin-bottom: 0.8rem;
+      line-height: 1.4;
+    }
+
+    .quote-card .quote-date {
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.75rem;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 0.08em;
+    }
+
+    /* ========== GRADIENT THEMES (rotate by date) ========== */
+    .theme-0 { background: linear-gradient(145deg, #E8756A 0%, #F4A261 50%, #E9C46A 100%); }
+    .theme-1 { background: linear-gradient(145deg, #264653 0%, #2A9D8F 50%, #6AB29B 100%); }
+    .theme-2 { background: linear-gradient(145deg, #D4648A 0%, #E88DAB 50%, #F4C2C2 100%); }
+    .theme-3 { background: linear-gradient(145deg, #6C63FF 0%, #A594F9 50%, #C8B6FF 100%); }
+    .theme-4 { background: linear-gradient(145deg, #E07A5F 0%, #F2CC8F 50%, #F5E6CA 100%); }
+    .theme-5 { background: linear-gradient(145deg, #355070 0%, #6D597A 50%, #B56576 100%); }
+    .theme-6 { background: linear-gradient(145deg, #606C38 0%, #99AA49 50%, #FEFAE0 100%); }
+    .theme-7 { background: linear-gradient(145deg, #BC6C25 0%, #DDA15E 50%, #FEFAE0 100%); }
+
+    /* Adjust text color for lighter themes */
+    .theme-4 .quote-text,
+    .theme-6 .quote-text,
+    .theme-7 .quote-text {
+      color: #3D2C2C;
+      text-shadow: none;
+    }
+    .theme-4 .deco-quote,
+    .theme-6 .deco-quote,
+    .theme-7 .deco-quote {
+      color: #3D2C2C;
+    }
+    .theme-4 .quote-author,
+    .theme-6 .quote-author,
+    .theme-7 .quote-author {
+      color: rgba(61,44,44,0.75);
+    }
+    .theme-4 .quote-note,
+    .theme-6 .quote-note,
+    .theme-7 .quote-note {
+      color: rgba(61,44,44,0.65);
+    }
+    .theme-4 .quote-date,
+    .theme-6 .quote-date,
+    .theme-7 .quote-date {
+      color: rgba(61,44,44,0.45);
+    }
+
+    /* ========== SAVE BUTTON ========== */
+    .save-btn {
+      display: block;
+      margin: 0 auto 2rem;
+      padding: 0.85rem 2rem;
+      border: none;
+      border-radius: 50px;
+      background: linear-gradient(135deg, #E8756A, #F4A261);
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(232, 117, 106, 0.35);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .save-btn:active {
+      transform: scale(0.96);
+      box-shadow: 0 2px 8px rgba(232, 117, 106, 0.3);
+    }
+
+    /* ========== ARCHIVE SECTION ========== */
+    .archive-section {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 0 1rem 3rem;
+    }
+
+    .archive-toggle {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      width: 100%;
+      padding: 0.9rem;
+      border: 2px solid #F0DDD1;
+      border-radius: 16px;
+      background: transparent;
+      font-family: 'Nunito', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      color: #B08968;
+      cursor: pointer;
+      transition: background 0.2s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .archive-toggle:hover {
+      background: #FFF0E6;
+    }
+
+    .archive-toggle .arrow {
+      transition: transform 0.3s ease;
+      font-size: 0.8rem;
+    }
+
+    .archive-toggle.open .arrow {
+      transform: rotate(180deg);
+    }
+
+    .archive-list {
+      display: none;
+      margin-top: 1rem;
+    }
+
+    .archive-list.show {
+      display: block;
+    }
+
+    .archive-item {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      margin-bottom: 0.6rem;
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .archive-item:active {
+      transform: scale(0.98);
+    }
+
+    .archive-item .color-dot {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      flex-shrink: 0;
+    }
+
+    .archive-item .item-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .archive-item .item-date {
+      font-size: 0.75rem;
+      color: #B08968;
+      font-weight: 600;
+      margin-bottom: 0.15rem;
+    }
+
+    .archive-item .item-preview {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.9rem;
+      color: #3D2C2C;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* ========== MODAL OVERLAY (for viewing past quotes) ========== */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,0.6);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal-inner {
+      width: 100%;
+      max-width: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .modal-close {
+      align-self: flex-end;
+      background: rgba(255,255,255,0.25);
+      border: none;
+      border-radius: 50%;
+      width: 36px;
+      height: 36px;
+      font-size: 1.2rem;
+      color: #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .modal-save-btn {
+      padding: 0.75rem 1.8rem;
+      border: none;
+      border-radius: 50px;
+      background: rgba(255,255,255,0.25);
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ========== LOADING STATE ========== */
+    .loading {
+      text-align: center;
+      padding: 4rem 1rem;
+      color: #B08968;
+      font-size: 1.1rem;
+    }
+
+    /* ========== RESPONSIVE ========== */
+    @media (min-width: 600px) {
+      .header h1 { font-size: 2.8rem; }
+      .quote-card { min-height: 520px; padding: 3rem 2.5rem 2.5rem; }
+      .quote-card .quote-text { font-size: 1.75rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <header class="header">
+    <h1>Motivation</h1>
+    <p class="subtitle">a little note from Dad, every day</p>
+  </header>
+
+  <!-- Loading indicator -->
+  <div class="loading" id="loading">Loading today's message...</div>
+
+  <!-- Main quote card (today's or most recent) -->
+  <div class="card-wrapper" id="mainCardWrapper" style="display:none;">
+    <div class="quote-card" id="mainCard">
+      <div class="card-content">
+        <div class="deco-quote">"</div>
+        <p class="quote-text" id="mainQuote"></p>
+        <p class="quote-author" id="mainAuthor"></p>
+        <p class="quote-note" id="mainNote"></p>
+        <p class="quote-date" id="mainDate"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Save button -->
+  <button class="save-btn" id="saveBtn" style="display:none;" onclick="saveCard('mainCard', currentDate)">
+    Save to Phone
+  </button>
+
+  <!-- Archive section -->
+  <section class="archive-section" id="archiveSection" style="display:none;">
+    <button class="archive-toggle" id="archiveToggle" onclick="toggleArchive()">
+      <span>Previous Messages</span>
+      <span class="arrow">▼</span>
+    </button>
+    <div class="archive-list" id="archiveList"></div>
+  </section>
+
+  <!-- Modal for viewing past quotes -->
+  <div class="modal-overlay" id="modal" onclick="closeModal(event)">
+    <div class="modal-inner">
+      <button class="modal-close" onclick="closeModalDirect()">✕</button>
+      <div class="quote-card" id="modalCard">
+        <div class="card-content">
+          <div class="deco-quote">"</div>
+          <p class="quote-text" id="modalQuote"></p>
+          <p class="quote-author" id="modalAuthor"></p>
+          <p class="quote-note" id="modalNote"></p>
+          <p class="quote-date" id="modalDate"></p>
+        </div>
+      </div>
+      <button class="modal-save-btn" onclick="saveCard('modalCard', modalCurrentDate)">
+        Save This Quote
+      </button>
+    </div>
+  </div>
+
+  <script>
+    /* ========== GLOBALS ========== */
+    const THEME_COUNT = 8;
+    let currentDate = '';      // date string for the main card
+    let modalCurrentDate = ''; // date string for the modal card
+    let allQuotes = [];
+
+    /* ========== HELPERS ========== */
+
+    // Get today's date as YYYY-MM-DD in local time
+    function getTodayStr() {
+      const d = new Date();
+      return d.getFullYear() + '-' +
+        String(d.getMonth() + 1).padStart(2, '0') + '-' +
+        String(d.getDate()).padStart(2, '0');
+    }
+
+    // Pick a theme index based on the date string (rotates through themes)
+    function themeForDate(dateStr) {
+      const parts = dateStr.split('-');
+      const day = parseInt(parts[2], 10);
+      const month = parseInt(parts[1], 10);
+      return (day + month) % THEME_COUNT;
+    }
+
+    // Format YYYY-MM-DD into a friendly string like "March 5, 2025"
+    function formatDate(dateStr) {
+      const months = ['January','February','March','April','May','June',
+                      'July','August','September','October','November','December'];
+      const parts = dateStr.split('-');
+      const m = parseInt(parts[1], 10) - 1;
+      const d = parseInt(parts[2], 10);
+      return months[m] + ' ' + d + ', ' + parts[0];
+    }
+
+    /* ========== RENDER FUNCTIONS ========== */
+
+    // Populate a card element with quote data and apply theme
+    function renderCard(cardEl, quote) {
+      const themeIdx = themeForDate(quote.date);
+      // Remove any existing theme class
+      cardEl.className = cardEl.className.replace(/theme-\d/g, '').trim();
+      cardEl.classList.add('theme-' + themeIdx);
+
+      cardEl.querySelector('.quote-text').textContent = '"' + quote.quote + '"';
+      cardEl.querySelector('.quote-author').textContent = '— ' + quote.author;
+
+      const noteEl = cardEl.querySelector('.quote-note');
+      if (quote.note) {
+        noteEl.textContent = quote.note;
+        noteEl.style.display = '';
+      } else {
+        noteEl.style.display = 'none';
+      }
+
+      cardEl.querySelector('.quote-date').textContent = formatDate(quote.date);
+    }
+
+    // Build the archive list items
+    function renderArchive(quotes) {
+      const list = document.getElementById('archiveList');
+      // All quotes except the one shown as the main card
+      const past = quotes.filter(q => q.date !== currentDate);
+      if (past.length === 0) {
+        document.getElementById('archiveSection').style.display = 'none';
+        return;
+      }
+
+      document.getElementById('archiveSection').style.display = '';
+      list.innerHTML = '';
+
+      past.forEach(function(q, idx) {
+        const item = document.createElement('div');
+        item.className = 'archive-item';
+        item.onclick = function() { openModal(q); };
+
+        const dot = document.createElement('div');
+        dot.className = 'color-dot theme-' + themeForDate(q.date);
+        item.appendChild(dot);
+
+        const info = document.createElement('div');
+        info.className = 'item-info';
+
+        const dateP = document.createElement('p');
+        dateP.className = 'item-date';
+        dateP.textContent = formatDate(q.date);
+        info.appendChild(dateP);
+
+        const preview = document.createElement('p');
+        preview.className = 'item-preview';
+        preview.textContent = '"' + q.quote + '"';
+        info.appendChild(preview);
+
+        item.appendChild(info);
+        list.appendChild(item);
+      });
+    }
+
+    /* ========== ARCHIVE TOGGLE ========== */
+    function toggleArchive() {
+      const btn = document.getElementById('archiveToggle');
+      const list = document.getElementById('archiveList');
+      btn.classList.toggle('open');
+      list.classList.toggle('show');
+    }
+
+    /* ========== MODAL ========== */
+    function openModal(quote) {
+      modalCurrentDate = quote.date;
+      renderCard(document.getElementById('modalCard'), quote);
+      document.getElementById('modal').classList.add('show');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal(e) {
+      if (e.target === document.getElementById('modal')) {
+        closeModalDirect();
+      }
+    }
+
+    function closeModalDirect() {
+      document.getElementById('modal').classList.remove('show');
+      document.body.style.overflow = '';
+    }
+
+    /* ========== SAVE TO PHONE (html2canvas) ========== */
+    function saveCard(cardId, dateStr) {
+      var card = document.getElementById(cardId);
+      html2canvas(card, {
+        scale: 2,
+        backgroundColor: null,
+        borderRadius: 24,
+        useCORS: true
+      }).then(function(canvas) {
+        var link = document.createElement('a');
+        link.download = 'motivation-' + dateStr + '.png';
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+      });
+    }
+
+    /* ========== INIT: FETCH QUOTES & RENDER ========== */
+    fetch('quotes.json')
+      .then(function(res) { return res.json(); })
+      .then(function(quotes) {
+        allQuotes = quotes;
+        var today = getTodayStr();
+
+        // Find today's quote or fall back to the most recent
+        var todayQuote = quotes.find(function(q) { return q.date === today; });
+        if (!todayQuote) {
+          // Sort descending and take the first (most recent)
+          var sorted = quotes.slice().sort(function(a, b) {
+            return b.date.localeCompare(a.date);
+          });
+          todayQuote = sorted[0];
+        }
+
+        currentDate = todayQuote.date;
+
+        // Render main card
+        renderCard(document.getElementById('mainCard'), todayQuote);
+        document.getElementById('loading').style.display = 'none';
+        document.getElementById('mainCardWrapper').style.display = '';
+        document.getElementById('saveBtn').style.display = '';
+
+        // Render archive
+        renderArchive(quotes);
+      })
+      .catch(function(err) {
+        document.getElementById('loading').textContent =
+          'Could not load quotes. Please check quotes.json.';
+        console.error('Error loading quotes:', err);
+      });
+  </script>
+
+</body>
+</html>
