@@ -766,6 +766,55 @@
       font-weight: 600;
     }
 
+    /* ========== LEGENDARY CARD ========== */
+    .quote-card.legendary {
+      outline: 2px solid rgba(255, 215, 0, 0.6);
+      outline-offset: 3px;
+      animation: legendGlow 3s ease-in-out infinite;
+    }
+
+    @keyframes legendGlow {
+      0%, 100% { box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 25px rgba(255, 215, 0, 0.15); }
+      50%      { box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 40px rgba(255, 215, 0, 0.35); }
+    }
+
+    .legend-ribbon {
+      display: none;
+      position: absolute;
+      top: 16px;
+      left: -8px;
+      z-index: 2;
+      background: linear-gradient(135deg, #FFD700, #FFA500);
+      color: #5D3A00;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      padding: 0.3rem 0.9rem 0.3rem 0.7rem;
+      border-radius: 0 6px 6px 0;
+      box-shadow: 0 2px 8px rgba(255, 165, 0, 0.4);
+    }
+
+    .legend-ribbon::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -6px;
+      width: 8px;
+      height: 6px;
+      background: #CC8400;
+      clip-path: polygon(100% 0, 0 0, 100% 100%);
+    }
+
+    .quote-card.legendary .legend-ribbon {
+      display: block;
+    }
+
+    .quote-card.legendary .quote-text {
+      text-shadow: 0 2px 12px rgba(255, 215, 0, 0.2), 0 2px 8px rgba(0,0,0,0.12);
+    }
+
     /* ========== RESPONSIVE ========== */
     @media (min-width: 600px) {
       .header h1 { font-size: 3rem; }
@@ -797,6 +846,7 @@
     <!-- Main quote card -->
     <div class="card-wrapper" id="mainCardWrapper" style="display:none;">
       <div class="quote-card" id="mainCard">
+        <div class="legend-ribbon">&#x2B50; be a legend</div>
         <div class="card-content">
           <div class="card-mood-emoji" id="mainCardMoodEmoji"></div>
           <div class="deco-quote">&ldquo;</div>
@@ -869,6 +919,7 @@
     <div class="modal-inner">
       <button class="modal-close" onclick="closeModalDirect()" aria-label="Close">&times;</button>
       <div class="quote-card" id="modalCard">
+        <div class="legend-ribbon">&#x2B50; be a legend</div>
         <div class="card-content">
           <div class="card-mood-emoji" id="modalCardMoodEmoji"></div>
           <div class="deco-quote">&ldquo;</div>
@@ -985,8 +1036,12 @@
     function renderCard(cardEl, quote) {
       var themeIdx = themeForDate(quote.date);
       cardEl.className = cardEl.className.replace(/theme-\d+/g, '').trim();
+      cardEl.classList.remove('legendary');
       cardEl.classList.add('quote-card');
       cardEl.classList.add('theme-' + themeIdx);
+      if (quote.legendary) {
+        cardEl.classList.add('legendary');
+      }
 
       // Mood emoji on card
       var moodEmojiEl = cardEl.querySelector('.card-mood-emoji');
