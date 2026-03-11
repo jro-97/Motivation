@@ -815,11 +815,106 @@
       text-shadow: 0 2px 12px rgba(255, 215, 0, 0.2), 0 2px 8px rgba(0,0,0,0.12);
     }
 
+    /* ========== WARRIOR CARD ========== */
+    .quote-card.warrior {
+      outline: 2.5px solid rgba(220, 38, 38, 0.6);
+      outline-offset: 3px;
+      animation: warriorGlow 2.5s ease-in-out infinite;
+    }
+
+    @keyframes warriorGlow {
+      0%, 100% { box-shadow: 0 20px 60px rgba(0,0,0,0.2), 0 0 25px rgba(220, 38, 38, 0.2); }
+      50%      { box-shadow: 0 20px 60px rgba(0,0,0,0.2), 0 0 45px rgba(220, 38, 38, 0.45); }
+    }
+
+    .warrior-ribbon {
+      display: none;
+      position: absolute;
+      top: 16px;
+      left: -8px;
+      z-index: 2;
+      background: linear-gradient(135deg, #DC2626, #991B1B);
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      padding: 0.3rem 0.9rem 0.3rem 0.7rem;
+      border-radius: 0 6px 6px 0;
+      box-shadow: 0 2px 10px rgba(220, 38, 38, 0.5);
+    }
+
+    .warrior-ribbon::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -6px;
+      width: 8px;
+      height: 6px;
+      background: #7F1D1D;
+      clip-path: polygon(100% 0, 0 0, 100% 100%);
+    }
+
+    .quote-card.warrior .warrior-ribbon {
+      display: block;
+    }
+
+    .quote-card.warrior .quote-text {
+      text-shadow: 0 2px 12px rgba(220, 38, 38, 0.25), 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    /* Bold emphasis within quotes */
+    .quote-text strong {
+      font-weight: 700;
+      color: #fff;
+      text-shadow: 0 0 20px rgba(255,255,255,0.3), 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    /* Impact entrance for warrior cards */
+    .card-wrapper.impact {
+      animation: impactEnter 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+    }
+
+    @keyframes impactEnter {
+      0% {
+        opacity: 0;
+        transform: translateY(60px) scale(0.85);
+      }
+      50% {
+        transform: translateY(-8px) scale(1.02);
+      }
+      70% {
+        transform: translateY(3px) scale(0.99);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Long quotes get smaller text and taller card */
+    .quote-card.long-quote {
+      min-height: 560px;
+    }
+
+    .quote-card.long-quote .quote-text {
+      font-size: 1.15rem;
+      line-height: 1.55;
+    }
+
+    .quote-card.long-quote .deco-quote {
+      font-size: 4rem;
+      margin-bottom: -1.2rem;
+    }
+
     /* ========== RESPONSIVE ========== */
     @media (min-width: 600px) {
       .header h1 { font-size: 3rem; }
       .quote-card { min-height: 520px; padding: 3rem 2.5rem 2.5rem; }
       .quote-card .quote-text { font-size: 1.7rem; }
+      .quote-card.long-quote { min-height: 600px; }
+      .quote-card.long-quote .quote-text { font-size: 1.3rem; }
     }
   </style>
 </head>
@@ -847,6 +942,7 @@
     <div class="card-wrapper" id="mainCardWrapper" style="display:none;">
       <div class="quote-card" id="mainCard">
         <div class="legend-ribbon">&#x2B50; be a legend</div>
+        <div class="warrior-ribbon">&#x1F525; go get it</div>
         <div class="card-content">
           <div class="card-mood-emoji" id="mainCardMoodEmoji"></div>
           <div class="deco-quote">&ldquo;</div>
@@ -920,6 +1016,7 @@
       <button class="modal-close" onclick="closeModalDirect()" aria-label="Close">&times;</button>
       <div class="quote-card" id="modalCard">
         <div class="legend-ribbon">&#x2B50; be a legend</div>
+        <div class="warrior-ribbon">&#x1F525; go get it</div>
         <div class="card-content">
           <div class="card-mood-emoji" id="modalCardMoodEmoji"></div>
           <div class="deco-quote">&ldquo;</div>
@@ -1037,10 +1134,27 @@
       var themeIdx = themeForDate(quote.date);
       cardEl.className = cardEl.className.replace(/theme-\d+/g, '').trim();
       cardEl.classList.remove('legendary');
+      cardEl.classList.remove('warrior');
+      cardEl.classList.remove('long-quote');
       cardEl.classList.add('quote-card');
       cardEl.classList.add('theme-' + themeIdx);
       if (quote.legendary) {
         cardEl.classList.add('legendary');
+      }
+      if (quote.warrior) {
+        cardEl.classList.add('warrior');
+      }
+      if (quote.quote.length > 250) {
+        cardEl.classList.add('long-quote');
+      }
+
+      // Impact entrance for warrior quotes on main card
+      var wrapper = cardEl.closest('.card-wrapper');
+      if (wrapper && quote.warrior) {
+        wrapper.classList.remove('impact');
+        wrapper.classList.add('impact');
+      } else if (wrapper) {
+        wrapper.classList.remove('impact');
       }
 
       // Mood emoji on card
@@ -1057,7 +1171,18 @@
         moodLabelEl.style.display = 'none';
       }
 
-      cardEl.querySelector('.quote-text').textContent = '\u201C' + quote.quote + '\u201D';
+      // Render quote text with bold emphasis (text between *asterisks*) and line breaks
+      var quoteTextEl = cardEl.querySelector('.quote-text');
+      var rawText = '\u201C' + quote.quote + '\u201D';
+      var needsHtml = quote.quote.indexOf('*') !== -1 || quote.quote.indexOf('\n') !== -1;
+      if (needsHtml) {
+        var html = rawText
+          .replace(/\n/g, '<br>')
+          .replace(/\*([^*]+)\*/g, '<strong>$1</strong>');
+        quoteTextEl.innerHTML = html;
+      } else {
+        quoteTextEl.textContent = rawText;
+      }
       cardEl.querySelector('.quote-author').textContent = '\u2014 ' + quote.author;
 
       var noteEl = cardEl.querySelector('.quote-note');
