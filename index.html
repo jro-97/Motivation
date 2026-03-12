@@ -947,37 +947,7 @@
       display: block;
     }
 
-    .wolf-decoration {
-      display: none;
-      position: absolute;
-      bottom: 10px;
-      width: 80px;
-      height: 80px;
-      z-index: 0;
-      opacity: 0.18;
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-    }
 
-    .quote-card.wolves .wolf-decoration {
-      display: block;
-    }
-
-    /* Howling wolf silhouette — dark wolf (fear), bottom-left, facing left */
-    .wolf-fear {
-      left: 10px;
-      opacity: 0.14;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpath d='M30 110 C30 110 28 95 30 85 C32 75 25 72 22 65 C19 58 22 50 25 45 C28 40 26 35 24 28 C22 21 28 18 30 22 C32 26 35 20 38 14 C41 8 45 12 44 18 C43 24 48 22 52 20 C56 18 58 24 55 30 C52 36 56 38 60 36 C64 34 68 38 65 42 C62 46 58 48 55 52 C52 56 54 62 52 68 C50 74 48 80 46 88 C44 96 42 110 42 110 Z' fill='%23000'/%3E%3C/svg%3E");
-      transform: scaleX(-1);
-    }
-
-    /* Howling wolf silhouette — light wolf (courage), bottom-right */
-    .wolf-courage {
-      right: 10px;
-      opacity: 0.2;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'%3E%3Cpath d='M30 110 C30 110 28 95 30 85 C32 75 25 72 22 65 C19 58 22 50 25 45 C28 40 26 35 24 28 C22 21 28 18 30 22 C32 26 35 20 38 14 C41 8 45 12 44 18 C43 24 48 22 52 20 C56 18 58 24 55 30 C52 36 56 38 60 36 C64 34 68 38 65 42 C62 46 58 48 55 52 C52 56 54 62 52 68 C50 74 48 80 46 88 C44 96 42 110 42 110 Z' fill='%23FFD5A0'/%3E%3C/svg%3E");
-    }
 
     /* Long quotes get smaller text and taller card */
     .quote-card.long-quote {
@@ -1030,8 +1000,6 @@
         <div class="legend-ribbon">&#x2B50; be a legend</div>
         <div class="warrior-ribbon">&#x1F525; go get it</div>
         <div class="wolves-ribbon">&#x1F43A; feed the right wolf</div>
-        <div class="wolf-decoration wolf-fear"></div>
-        <div class="wolf-decoration wolf-courage"></div>
         <div class="card-content">
           <div class="card-mood-emoji" id="mainCardMoodEmoji"></div>
           <div class="deco-quote">&ldquo;</div>
@@ -1107,8 +1075,6 @@
         <div class="legend-ribbon">&#x2B50; be a legend</div>
         <div class="warrior-ribbon">&#x1F525; go get it</div>
         <div class="wolves-ribbon">&#x1F43A; feed the right wolf</div>
-        <div class="wolf-decoration wolf-fear"></div>
-        <div class="wolf-decoration wolf-courage"></div>
         <div class="card-content">
           <div class="card-mood-emoji" id="modalCardMoodEmoji"></div>
           <div class="deco-quote">&ldquo;</div>
