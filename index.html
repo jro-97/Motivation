@@ -682,8 +682,10 @@
       backdrop-filter: blur(8px);
       -webkit-backdrop-filter: blur(8px);
       justify-content: center;
-      align-items: center;
+      align-items: flex-start;
       padding: 1.5rem;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       animation: modalFadeIn 0.3s ease;
     }
 
@@ -699,10 +701,12 @@
     .modal-inner {
       width: 100%;
       max-width: 400px;
+      margin: auto;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 1rem;
+      padding-bottom: 2rem;
       animation: modalSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
 
@@ -1020,7 +1024,7 @@
       <button class="fav-btn" id="favBtn" onclick="toggleFavorite(currentDate)" aria-label="Favorite">
         <span id="favIcon">&#x2661;</span>
       </button>
-      <button class="fav-btn" id="shareBtn" onclick="shareQuote(currentDate)" aria-label="Share">
+      <button class="fav-btn" id="shareBtn" onclick="shareQuote(currentDate, 'shareBtn')" aria-label="Share">
         <span style="font-size:1.2rem;">&#x1F4E4;</span>
       </button>
     </div>
@@ -1085,12 +1089,15 @@
         </div>
         <span class="card-mood-label" id="modalCardMoodLabel"></span>
       </div>
-      <div style="display:flex; gap:0.6rem; align-items:center;">
+      <div style="display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap; justify-content:center;">
         <button class="modal-save-btn" onclick="saveCard('modalCard', modalCurrentDate)">
           Save This Quote
         </button>
         <button class="fav-btn" id="modalFavBtn" onclick="toggleFavorite(modalCurrentDate)" style="width:42px;height:42px;font-size:1.2rem;" aria-label="Favorite">
           <span id="modalFavIcon">&#x2661;</span>
+        </button>
+        <button class="fav-btn" id="modalShareBtn" onclick="shareQuote(modalCurrentDate, 'modalShareBtn')" style="width:42px;height:42px;font-size:1.2rem;" aria-label="Share">
+          <span style="font-size:1.2rem;">&#x1F4E4;</span>
         </button>
       </div>
     </div>
@@ -1374,25 +1381,29 @@
     }
 
     /* ========== SHARE ========== */
-    function shareQuote(dateStr) {
+    function shareQuote(dateStr, btnId) {
       var q = quotesByDate[dateStr];
       if (!q) return;
 
       var url = window.location.origin + window.location.pathname + '?date=' + dateStr;
       var text = '\u201C' + q.quote + '\u201D \u2014 ' + q.author;
 
+      var targetBtnId = btnId || 'shareBtn';
+
       if (navigator.share) {
         navigator.share({ title: 'Motivation', text: text, url: url });
       } else {
         // Fallback: copy link to clipboard
         navigator.clipboard.writeText(url).then(function() {
-          var btn = document.getElementById('shareBtn');
-          btn.style.background = 'linear-gradient(135deg, #10B981, #34D399)';
-          btn.style.borderColor = 'transparent';
-          setTimeout(function() {
-            btn.style.background = '';
-            btn.style.borderColor = '';
-          }, 1500);
+          var btn = document.getElementById(targetBtnId);
+          if (btn) {
+            btn.style.background = 'linear-gradient(135deg, #10B981, #34D399)';
+            btn.style.borderColor = 'transparent';
+            setTimeout(function() {
+              btn.style.background = '';
+              btn.style.borderColor = '';
+            }, 1500);
+          }
         });
       }
     }
