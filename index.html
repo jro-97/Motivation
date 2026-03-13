@@ -951,7 +951,124 @@
       display: block;
     }
 
+    /* ========== CELEBRATE CARD ========== */
+    .quote-card.celebrate {
+      background: linear-gradient(155deg, #F59E0B 0%, #F97316 30%, #EC4899 65%, #8B5CF6 100%) !important;
+      outline: 2.5px solid rgba(251, 191, 36, 0.6);
+      outline-offset: 3px;
+      animation: celebrateGlow 3s ease-in-out infinite;
+    }
 
+    .quote-card.celebrate::before {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    .quote-card.celebrate::after {
+      background: rgba(251, 191, 36, 0.15);
+    }
+
+    @keyframes celebrateGlow {
+      0%, 100% { box-shadow: 0 20px 60px rgba(0,0,0,0.2), 0 0 25px rgba(251, 191, 36, 0.2); }
+      50%      { box-shadow: 0 20px 60px rgba(0,0,0,0.2), 0 0 50px rgba(251, 191, 36, 0.4); }
+    }
+
+    .celebrate-ribbon {
+      display: none;
+      position: absolute;
+      top: 16px;
+      left: -8px;
+      z-index: 2;
+      background: linear-gradient(135deg, #FBBF24, #F59E0B);
+      color: #78350F;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.6rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      padding: 0.3rem 0.9rem 0.3rem 0.7rem;
+      border-radius: 0 6px 6px 0;
+      box-shadow: 0 2px 10px rgba(251, 191, 36, 0.5);
+    }
+
+    .celebrate-ribbon::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -6px;
+      width: 8px;
+      height: 6px;
+      background: #B45309;
+      clip-path: polygon(100% 0, 0 0, 100% 100%);
+    }
+
+    .quote-card.celebrate .celebrate-ribbon {
+      display: block;
+    }
+
+    .quote-card.celebrate .quote-text {
+      text-shadow: 0 2px 12px rgba(251, 191, 36, 0.25), 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    /* Celebrate confetti container */
+    .confetti-container {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .confetti-piece {
+      position: absolute;
+      top: -20px;
+      width: 10px;
+      height: 14px;
+      border-radius: 2px;
+      animation: confettiFall linear forwards;
+    }
+
+    @keyframes confettiFall {
+      0% {
+        opacity: 1;
+        transform: translateY(0) translateX(0) rotateZ(0deg) rotateX(0deg);
+      }
+      25% {
+        transform: translateY(25vh) translateX(15px) rotateZ(180deg) rotateX(90deg);
+      }
+      50% {
+        transform: translateY(50vh) translateX(-10px) rotateZ(360deg) rotateX(180deg);
+      }
+      75% {
+        opacity: 1;
+        transform: translateY(75vh) translateX(20px) rotateZ(540deg) rotateX(270deg);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(105vh) translateX(-5px) rotateZ(720deg) rotateX(360deg);
+      }
+    }
+
+    /* Celebrate entrance — bouncy with a slight glow flash */
+    .card-wrapper.celebrate-enter {
+      animation: celebrateEnter 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    }
+
+    @keyframes celebrateEnter {
+      0% {
+        opacity: 0;
+        transform: translateY(50px) scale(0.88);
+      }
+      50% {
+        transform: translateY(-10px) scale(1.04);
+      }
+      75% {
+        transform: translateY(4px) scale(0.98);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
 
     /* Long quotes get smaller text and taller card */
     .quote-card.long-quote {
@@ -982,6 +1099,7 @@
 
   <!-- Floating sparkles background -->
   <div class="sparkles" id="sparkles"></div>
+  <div class="confetti-container" id="confetti"></div>
 
   <div class="content">
     <!-- Header -->
@@ -1004,6 +1122,7 @@
         <div class="legend-ribbon">&#x2B50; be a legend</div>
         <div class="warrior-ribbon">&#x1F525; go get it</div>
         <div class="wolves-ribbon">&#x1F43A; feed the right wolf</div>
+        <div class="celebrate-ribbon">&#x1F389; you earned this</div>
         <div class="card-content">
           <div class="card-mood-emoji" id="mainCardMoodEmoji"></div>
           <div class="deco-quote">&ldquo;</div>
@@ -1079,6 +1198,7 @@
         <div class="legend-ribbon">&#x2B50; be a legend</div>
         <div class="warrior-ribbon">&#x1F525; go get it</div>
         <div class="wolves-ribbon">&#x1F43A; feed the right wolf</div>
+        <div class="celebrate-ribbon">&#x1F389; you earned this</div>
         <div class="card-content">
           <div class="card-mood-emoji" id="modalCardMoodEmoji"></div>
           <div class="deco-quote">&ldquo;</div>
@@ -1201,6 +1321,7 @@
       cardEl.classList.remove('legendary');
       cardEl.classList.remove('warrior');
       cardEl.classList.remove('wolves');
+      cardEl.classList.remove('celebrate');
       cardEl.classList.remove('long-quote');
       cardEl.classList.add('quote-card');
       cardEl.classList.add('theme-' + themeIdx);
@@ -1213,17 +1334,23 @@
       if (quote.wolves) {
         cardEl.classList.add('wolves');
       }
+      if (quote.celebrate) {
+        cardEl.classList.add('celebrate');
+      }
       if (quote.quote.length > 250) {
         cardEl.classList.add('long-quote');
       }
 
-      // Impact entrance for warrior quotes on main card
+      // Special entrance animations for main card
       var wrapper = cardEl.closest('.card-wrapper');
-      if (wrapper && quote.warrior) {
+      if (wrapper) {
         wrapper.classList.remove('impact');
-        wrapper.classList.add('impact');
-      } else if (wrapper) {
-        wrapper.classList.remove('impact');
+        wrapper.classList.remove('celebrate-enter');
+        if (quote.warrior) {
+          wrapper.classList.add('impact');
+        } else if (quote.celebrate) {
+          wrapper.classList.add('celebrate-enter');
+        }
       }
 
       // Mood emoji on card
@@ -1526,6 +1653,31 @@
       }
     }
 
+    /* ========== CONFETTI ========== */
+    function launchConfetti() {
+      var container = document.getElementById('confetti');
+      var colors = ['#FBBF24', '#F59E0B', '#EC4899', '#8B5CF6', '#34D399', '#F43F5E', '#3B82F6', '#FF6B6B'];
+      var count = 60;
+
+      for (var i = 0; i < count; i++) {
+        var piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.width = (Math.random() * 8 + 6) + 'px';
+        piece.style.height = (Math.random() * 10 + 8) + 'px';
+        piece.style.animationDuration = (Math.random() * 2 + 2.5) + 's';
+        piece.style.animationDelay = (Math.random() * 1.2) + 's';
+        piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+        container.appendChild(piece);
+      }
+
+      // Clean up after animation
+      setTimeout(function() {
+        container.innerHTML = '';
+      }, 5000);
+    }
+
     /* ========== INIT ========== */
     fetch('quotes.json')
       .then(function(res) { return res.json(); })
@@ -1566,6 +1718,11 @@
 
         // Set up favorite button for current quote
         updateFavButtons(currentDate);
+
+        // Confetti burst for celebrate quotes
+        if (todayQuote.celebrate) {
+          setTimeout(launchConfetti, 600);
+        }
 
         // Mood badge in header
         var mood = getMood(todayQuote);

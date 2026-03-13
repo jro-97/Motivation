@@ -50,5 +50,13 @@
     "note": "You already know which wolf to feed. I love you and I am proud of you! — Daddy",
     "mood": "wise",
     "wolves": true
+  },
+  {
+    "date": "2026-03-13",
+    "quote": "To uncover your true potential you must first find your own limits and then you have to have the courage to blow past them.",
+    "author": "Picabo Street",
+    "note": "You pushed through an incredible week — tryouts, dance, rehearsals, all of it. Enjoy every minute of spring break. You earned it. I love you and I am so proud of you! — Daddy",
+    "mood": "brave",
+    "celebrate": true
   }
 ]
