@@ -1070,6 +1070,131 @@
       }
     }
 
+    /* ========== RAINBOW CARD (Judy Garland / Oz) ========== */
+    .quote-card.rainbow {
+      background: linear-gradient(155deg,
+        #FF6B6B 0%, #FF8E53 14%, #FFBD39 28%,
+        #34D399 42%, #3B82F6 57%, #6366F1 71%,
+        #A78BFA 85%, #EC4899 100%) !important;
+      background-size: 200% 200% !important;
+      animation: rainbowShift 6s ease-in-out infinite !important;
+      outline: 2.5px solid rgba(255, 255, 255, 0.5);
+      outline-offset: 3px;
+    }
+
+    @keyframes rainbowShift {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .quote-card.rainbow::before {
+      background: rgba(255, 255, 255, 0.12);
+    }
+
+    .quote-card.rainbow::after {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .quote-card.rainbow .quote-text {
+      text-shadow: 0 2px 12px rgba(255, 255, 255, 0.25), 0 2px 8px rgba(0,0,0,0.15);
+    }
+
+    .rainbow-ribbon {
+      display: none;
+      position: absolute;
+      top: 16px;
+      left: -8px;
+      z-index: 2;
+      background: linear-gradient(135deg,
+        #FF6B6B, #FFBD39, #34D399, #3B82F6, #A78BFA);
+      background-size: 200% 100%;
+      animation: ribbonShimmer 3s ease-in-out infinite;
+      color: #fff;
+      font-family: 'Nunito', sans-serif;
+      font-size: 0.55rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      padding: 0.3rem 0.9rem 0.3rem 0.7rem;
+      border-radius: 0 6px 6px 0;
+      box-shadow: 0 2px 10px rgba(99, 102, 241, 0.4);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    }
+
+    @keyframes ribbonShimmer {
+      0%, 100% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+    }
+
+    .rainbow-ribbon::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -6px;
+      width: 8px;
+      height: 6px;
+      background: #4338CA;
+      clip-path: polygon(100% 0, 0 0, 100% 100%);
+    }
+
+    .quote-card.rainbow .rainbow-ribbon {
+      display: block;
+    }
+
+    /* Floating rainbow arcs inside the card */
+    .rainbow-arcs {
+      display: none;
+      position: absolute;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+      border-radius: 28px;
+    }
+
+    .quote-card.rainbow .rainbow-arcs {
+      display: block;
+    }
+
+    .rainbow-arc {
+      position: absolute;
+      border-radius: 50%;
+      border: 3px solid;
+      border-bottom-color: transparent;
+      border-left-color: transparent;
+      opacity: 0;
+      animation: arcFloat linear infinite;
+    }
+
+    .rainbow-arc:nth-child(1) {
+      width: 160px; height: 160px;
+      border-color: rgba(255,189,57,0.25) rgba(255,107,107,0.25) transparent transparent;
+      top: -30px; right: -40px;
+      animation-duration: 8s;
+      animation-delay: 0s;
+    }
+    .rainbow-arc:nth-child(2) {
+      width: 120px; height: 120px;
+      border-color: rgba(52,211,153,0.2) rgba(59,130,246,0.2) transparent transparent;
+      bottom: 20px; left: -20px;
+      animation-duration: 10s;
+      animation-delay: 2s;
+    }
+    .rainbow-arc:nth-child(3) {
+      width: 200px; height: 200px;
+      border-color: rgba(167,139,250,0.18) rgba(236,72,153,0.18) transparent transparent;
+      top: 40%; right: -60px;
+      animation-duration: 12s;
+      animation-delay: 4s;
+    }
+
+    @keyframes arcFloat {
+      0% { opacity: 0; transform: rotate(0deg) scale(0.7); }
+      15% { opacity: 1; }
+      85% { opacity: 1; }
+      100% { opacity: 0; transform: rotate(180deg) scale(1.2); }
+    }
+
     /* Long quotes get smaller text and taller card */
     .quote-card.long-quote {
       min-height: 560px;
@@ -1123,6 +1248,12 @@
         <div class="warrior-ribbon">&#x1F525; go get it</div>
         <div class="wolves-ribbon">&#x1F43A; feed the right wolf</div>
         <div class="celebrate-ribbon">&#x1F389; you earned this</div>
+        <div class="rainbow-ribbon">&#x1F308; somewhere over the rainbow</div>
+        <div class="rainbow-arcs">
+          <div class="rainbow-arc"></div>
+          <div class="rainbow-arc"></div>
+          <div class="rainbow-arc"></div>
+        </div>
         <div class="card-content">
           <div class="card-mood-emoji" id="mainCardMoodEmoji"></div>
           <div class="deco-quote">&ldquo;</div>
@@ -1199,6 +1330,12 @@
         <div class="warrior-ribbon">&#x1F525; go get it</div>
         <div class="wolves-ribbon">&#x1F43A; feed the right wolf</div>
         <div class="celebrate-ribbon">&#x1F389; you earned this</div>
+        <div class="rainbow-ribbon">&#x1F308; somewhere over the rainbow</div>
+        <div class="rainbow-arcs">
+          <div class="rainbow-arc"></div>
+          <div class="rainbow-arc"></div>
+          <div class="rainbow-arc"></div>
+        </div>
         <div class="card-content">
           <div class="card-mood-emoji" id="modalCardMoodEmoji"></div>
           <div class="deco-quote">&ldquo;</div>
@@ -1322,6 +1459,7 @@
       cardEl.classList.remove('warrior');
       cardEl.classList.remove('wolves');
       cardEl.classList.remove('celebrate');
+      cardEl.classList.remove('rainbow');
       cardEl.classList.remove('long-quote');
       cardEl.classList.add('quote-card');
       cardEl.classList.add('theme-' + themeIdx);
@@ -1336,6 +1474,9 @@
       }
       if (quote.celebrate) {
         cardEl.classList.add('celebrate');
+      }
+      if (quote.rainbow) {
+        cardEl.classList.add('rainbow');
       }
       if (quote.quote.length > 250) {
         cardEl.classList.add('long-quote');
