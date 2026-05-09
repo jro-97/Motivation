@@ -1659,7 +1659,7 @@
       var targetBtnId = btnId || 'shareBtn';
 
       if (navigator.share) {
-        navigator.share({ title: 'Motivation', text: text, url: url });
+        navigator.share({ title: 'Motivation', text: text + '\n\n' + url });
       } else {
         // Fallback: copy link to clipboard
         navigator.clipboard.writeText(url).then(function() {
