@@ -54,7 +54,7 @@ A daily motivational quote app for my daughters. Each day I add a new quote, com
 
 | Field    | Required? | Description                                    |
 |----------|-----------|------------------------------------------------|
-| `date`   | Yes       | The date in `YYYY-MM-DD` format                |
+| `date`   | Yes       | The date in `YYYY-MM-DD` format (several entries can share a date — each shows as its own card) |
 | `quote`  | Yes       | The motivational quote text                    |
 | `author` | Yes       | Who said or wrote the quote                    |
 | `note`   | No        | A personal note from you (shown on the card)   |
