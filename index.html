@@ -1542,18 +1542,23 @@
       favBtn.setAttribute('data-key', quote.key);
       favBtn.onclick = function() { toggleFavorite(quote.key); };
 
-      var shareBtn = group.querySelector('.share-btn');
-      shareBtn.onclick = function() { shareQuote(quote.key, shareBtn); };
-
       return group;
     }
 
+    // One share button per day (under the last card) shares every quote for that day.
     function renderDay(container, dateStr) {
       container.innerHTML = '';
-      quotesByDate[dateStr].forEach(function(q) {
-        container.appendChild(buildCardGroup(q));
-        updateFavButtons(q.key);
+      var groups = quotesByDate[dateStr].map(buildCardGroup);
+      groups.forEach(function(group, i) {
+        var shareBtn = group.querySelector('.share-btn');
+        if (i === groups.length - 1) {
+          shareBtn.onclick = function() { shareDay(dateStr, shareBtn); };
+        } else {
+          shareBtn.remove();
+        }
+        container.appendChild(group);
       });
+      quotesByDate[dateStr].forEach(function(q) { updateFavButtons(q.key); });
     }
 
     /* ========== CALENDAR ========== */
@@ -1669,12 +1674,14 @@
     }
 
     /* ========== SHARE ========== */
-    function shareQuote(key, btn) {
-      var q = quotesByKey[key];
-      if (!q) return;
+    function shareDay(dateStr, btn) {
+      var dayQuotes = quotesByDate[dateStr];
+      if (!dayQuotes) return;
 
-      var url = window.location.origin + window.location.pathname + '?date=' + encodeURIComponent(key);
-      var text = '\u201C' + q.quote + '\u201D \u2014 ' + q.author;
+      var url = window.location.origin + window.location.pathname + '?date=' + dateStr;
+      var text = dayQuotes.map(function(q) {
+        return '\u201C' + q.quote + '\u201D \u2014 ' + q.author;
+      }).join('\n\n');
 
       if (navigator.share) {
         navigator.share({ title: 'Motivation', text: text + '\n\n' + url });
