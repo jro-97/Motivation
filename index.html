@@ -162,6 +162,10 @@
       animation: cardEnter 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) both;
     }
 
+    .card-group + .card-group .card-wrapper {
+      animation-delay: 0.2s;
+    }
+
     @keyframes cardEnter {
       0% {
         opacity: 0;
@@ -742,23 +746,37 @@
       background: rgba(255, 255, 255, 0.35);
     }
 
-    .modal-save-btn {
-      padding: 0.8rem 2rem;
-      border: none;
-      border-radius: 50px;
-      background: rgba(255, 255, 255, 0.22);
-      color: #fff;
-      font-family: 'Nunito', sans-serif;
-      font-size: 0.95rem;
-      font-weight: 800;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-      letter-spacing: 0.02em;
-      transition: background 0.2s;
+    .modal-body {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    .modal-save-btn:active {
+    .modal-body .card-wrapper {
+      padding: 0 0 1rem;
+    }
+
+    .modal-body .action-btns {
+      margin-bottom: 1.5rem;
+    }
+
+    .modal-body .save-btn {
+      padding: 0.8rem 2rem;
+      font-size: 0.95rem;
+      background: rgba(255, 255, 255, 0.22);
+      box-shadow: none;
+    }
+
+    .modal-body .save-btn:active {
       background: rgba(255, 255, 255, 0.35);
+      transform: none;
+    }
+
+    .modal-body .fav-btn {
+      width: 42px;
+      height: 42px;
+      font-size: 1.2rem;
     }
 
     /* ========== LOADING STATE ========== */
@@ -1241,43 +1259,45 @@
     <!-- Loading indicator -->
     <div class="loading" id="loading">Loading today's message...</div>
 
-    <!-- Main quote card -->
-    <div class="card-wrapper" id="mainCardWrapper" style="display:none;">
-      <div class="quote-card" id="mainCard">
-        <div class="legend-ribbon">&#x2B50; be a legend</div>
-        <div class="warrior-ribbon">&#x1F525; go get it</div>
-        <div class="wolves-ribbon">&#x1F43A; feed the right wolf</div>
-        <div class="celebrate-ribbon">&#x1F389; you earned this</div>
-        <div class="rainbow-ribbon">&#x1F308; somewhere over the rainbow</div>
-        <div class="rainbow-arcs">
-          <div class="rainbow-arc"></div>
-          <div class="rainbow-arc"></div>
-          <div class="rainbow-arc"></div>
-        </div>
-        <div class="card-content">
-          <div class="card-mood-emoji" id="mainCardMoodEmoji"></div>
-          <div class="deco-quote">&ldquo;</div>
-          <p class="quote-text" id="mainQuote"></p>
-          <p class="quote-author" id="mainAuthor"></p>
-          <p class="quote-note" id="mainNote"></p>
-          <p class="quote-date" id="mainDate"></p>
-        </div>
-        <span class="card-mood-label" id="mainCardMoodLabel"></span>
-      </div>
-    </div>
+    <!-- Main quote cards (one per quote for the day) -->
+    <div id="mainCards"></div>
 
-    <!-- Action buttons -->
-    <div class="action-btns" id="actionBtns" style="display:none;">
-      <button class="save-btn" id="saveBtn" onclick="saveCard('mainCard', currentDate)">
-        Save to Phone
-      </button>
-      <button class="fav-btn" id="favBtn" onclick="toggleFavorite(currentDate)" aria-label="Favorite">
-        <span id="favIcon">&#x2661;</span>
-      </button>
-      <button class="fav-btn" id="shareBtn" onclick="shareQuote(currentDate, 'shareBtn')" aria-label="Share">
-        <span style="font-size:1.2rem;">&#x1F4E4;</span>
-      </button>
-    </div>
+    <template id="cardGroupTemplate">
+      <div class="card-group">
+        <div class="card-wrapper">
+          <div class="quote-card">
+            <div class="legend-ribbon">&#x2B50; be a legend</div>
+            <div class="warrior-ribbon">&#x1F525; go get it</div>
+            <div class="wolves-ribbon">&#x1F43A; feed the right wolf</div>
+            <div class="celebrate-ribbon">&#x1F389; you earned this</div>
+            <div class="rainbow-ribbon">&#x1F308; somewhere over the rainbow</div>
+            <div class="rainbow-arcs">
+              <div class="rainbow-arc"></div>
+              <div class="rainbow-arc"></div>
+              <div class="rainbow-arc"></div>
+            </div>
+            <div class="card-content">
+              <div class="card-mood-emoji"></div>
+              <div class="deco-quote">&ldquo;</div>
+              <p class="quote-text"></p>
+              <p class="quote-author"></p>
+              <p class="quote-note"></p>
+              <p class="quote-date"></p>
+            </div>
+            <span class="card-mood-label"></span>
+          </div>
+        </div>
+        <div class="action-btns">
+          <button class="save-btn">Save to Phone</button>
+          <button class="fav-btn fav-toggle" aria-label="Favorite">
+            <span class="fav-icon">&#x2661;</span>
+          </button>
+          <button class="fav-btn share-btn" aria-label="Share">
+            <span style="font-size:1.2rem;">&#x1F4E4;</span>
+          </button>
+        </div>
+      </div>
+    </template>
 
     <!-- Divider -->
     <div class="section-divider" id="sectionDivider" style="display:none;">
@@ -1325,38 +1345,7 @@
   <div class="modal-overlay" id="modal" onclick="closeModal(event)">
     <div class="modal-inner">
       <button class="modal-close" onclick="closeModalDirect()" aria-label="Close">&times;</button>
-      <div class="quote-card" id="modalCard">
-        <div class="legend-ribbon">&#x2B50; be a legend</div>
-        <div class="warrior-ribbon">&#x1F525; go get it</div>
-        <div class="wolves-ribbon">&#x1F43A; feed the right wolf</div>
-        <div class="celebrate-ribbon">&#x1F389; you earned this</div>
-        <div class="rainbow-ribbon">&#x1F308; somewhere over the rainbow</div>
-        <div class="rainbow-arcs">
-          <div class="rainbow-arc"></div>
-          <div class="rainbow-arc"></div>
-          <div class="rainbow-arc"></div>
-        </div>
-        <div class="card-content">
-          <div class="card-mood-emoji" id="modalCardMoodEmoji"></div>
-          <div class="deco-quote">&ldquo;</div>
-          <p class="quote-text" id="modalQuote"></p>
-          <p class="quote-author" id="modalAuthor"></p>
-          <p class="quote-note" id="modalNote"></p>
-          <p class="quote-date" id="modalDate"></p>
-        </div>
-        <span class="card-mood-label" id="modalCardMoodLabel"></span>
-      </div>
-      <div style="display:flex; gap:0.6rem; align-items:center; flex-wrap:wrap; justify-content:center;">
-        <button class="modal-save-btn" onclick="saveCard('modalCard', modalCurrentDate)">
-          Save This Quote
-        </button>
-        <button class="fav-btn" id="modalFavBtn" onclick="toggleFavorite(modalCurrentDate)" style="width:42px;height:42px;font-size:1.2rem;" aria-label="Favorite">
-          <span id="modalFavIcon">&#x2661;</span>
-        </button>
-        <button class="fav-btn" id="modalShareBtn" onclick="shareQuote(modalCurrentDate, 'modalShareBtn')" style="width:42px;height:42px;font-size:1.2rem;" aria-label="Share">
-          <span style="font-size:1.2rem;">&#x1F4E4;</span>
-        </button>
-      </div>
+      <div class="modal-body" id="modalBody"></div>
     </div>
   </div>
 
@@ -1364,9 +1353,9 @@
     /* ========== GLOBALS ========== */
     var THEME_COUNT = 12;
     var currentDate = '';
-    var modalCurrentDate = '';
     var allQuotes = [];
     var quotesByDate = {};
+    var quotesByKey = {};
     var calendarYear = 0;
     var calendarMonth = 0;
 
@@ -1451,6 +1440,15 @@
       return y + '-' + String(m + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
     }
 
+    // The first quote of a day keeps the bare date as its key so favorites saved
+    // before multi-quote days existed still match.
+    function registerQuote(q) {
+      var list = quotesByDate[q.date] || (quotesByDate[q.date] = []);
+      list.push(q);
+      q.key = list.length === 1 ? q.date : q.date + '#' + list.length;
+      quotesByKey[q.key] = q;
+    }
+
     /* ========== RENDER CARD ========== */
     function renderCard(cardEl, quote) {
       var themeIdx = themeForDate(quote.date);
@@ -1533,6 +1531,31 @@
       cardEl.querySelector('.quote-date').textContent = formatDate(quote.date);
     }
 
+    function buildCardGroup(quote) {
+      var group = document.getElementById('cardGroupTemplate').content.firstElementChild.cloneNode(true);
+      var cardEl = group.querySelector('.quote-card');
+      renderCard(cardEl, quote);
+
+      group.querySelector('.save-btn').onclick = function() { saveCard(cardEl, quote.key); };
+
+      var favBtn = group.querySelector('.fav-toggle');
+      favBtn.setAttribute('data-key', quote.key);
+      favBtn.onclick = function() { toggleFavorite(quote.key); };
+
+      var shareBtn = group.querySelector('.share-btn');
+      shareBtn.onclick = function() { shareQuote(quote.key, shareBtn); };
+
+      return group;
+    }
+
+    function renderDay(container, dateStr) {
+      container.innerHTML = '';
+      quotesByDate[dateStr].forEach(function(q) {
+        container.appendChild(buildCardGroup(q));
+        updateFavButtons(q.key);
+      });
+    }
+
     /* ========== CALENDAR ========== */
     function renderCalendar() {
       var title = document.getElementById('calendarTitle');
@@ -1569,13 +1592,13 @@
           cell.classList.add('today');
         }
 
-        var quote = quotesByDate[dateStr];
-        if (quote) {
+        var dayQuotes = quotesByDate[dateStr];
+        if (dayQuotes) {
           cell.classList.add('has-quote');
           cell.classList.add('theme-' + themeForDate(dateStr));
 
           // Show mood emoji inside the calendar cell
-          var mood = getMood(quote);
+          var mood = getMood(dayQuotes[0]);
           if (mood) {
             var moodSpan = document.createElement('span');
             moodSpan.className = 'day-mood';
@@ -1590,7 +1613,7 @@
           (function(ds) {
             cell.onclick = function() {
               if (ds === currentDate) return;
-              openModal(quotesByDate[ds]);
+              openModal(ds);
             };
           })(dateStr);
         } else {
@@ -1614,10 +1637,8 @@
     }
 
     /* ========== MODAL ========== */
-    function openModal(quote) {
-      modalCurrentDate = quote.date;
-      renderCard(document.getElementById('modalCard'), quote);
-      updateFavButtons(modalCurrentDate);
+    function openModal(dateStr) {
+      renderDay(document.getElementById('modalBody'), dateStr);
       document.getElementById('modal').classList.add('show');
       document.body.style.overflow = 'hidden';
     }
@@ -1634,36 +1655,32 @@
     }
 
     /* ========== SAVE TO PHONE ========== */
-    function saveCard(cardId, dateStr) {
-      var card = document.getElementById(cardId);
-      html2canvas(card, {
+    function saveCard(cardEl, key) {
+      html2canvas(cardEl, {
         scale: 2,
         backgroundColor: null,
         useCORS: true
       }).then(function(canvas) {
         var link = document.createElement('a');
-        link.download = 'motivation-' + dateStr + '.png';
+        link.download = 'motivation-' + key.replace('#', '-') + '.png';
         link.href = canvas.toDataURL('image/png');
         link.click();
       });
     }
 
     /* ========== SHARE ========== */
-    function shareQuote(dateStr, btnId) {
-      var q = quotesByDate[dateStr];
+    function shareQuote(key, btn) {
+      var q = quotesByKey[key];
       if (!q) return;
 
-      var url = window.location.origin + window.location.pathname + '?date=' + dateStr;
+      var url = window.location.origin + window.location.pathname + '?date=' + encodeURIComponent(key);
       var text = '\u201C' + q.quote + '\u201D \u2014 ' + q.author;
-
-      var targetBtnId = btnId || 'shareBtn';
 
       if (navigator.share) {
         navigator.share({ title: 'Motivation', text: text + '\n\n' + url });
       } else {
         // Fallback: copy link to clipboard
         navigator.clipboard.writeText(url).then(function() {
-          var btn = document.getElementById(targetBtnId);
           if (btn) {
             btn.style.background = 'linear-gradient(135deg, #10B981, #34D399)';
             btn.style.borderColor = 'transparent';
@@ -1687,31 +1704,30 @@
       localStorage.setItem('motivation_favorites', JSON.stringify(favs));
     }
 
-    function isFavorite(dateStr) {
-      return getFavorites().indexOf(dateStr) !== -1;
+    function isFavorite(key) {
+      return getFavorites().indexOf(key) !== -1;
     }
 
-    function toggleFavorite(dateStr) {
+    function toggleFavorite(key) {
       var favs = getFavorites();
-      var idx = favs.indexOf(dateStr);
+      var idx = favs.indexOf(key);
       if (idx === -1) {
-        favs.push(dateStr);
+        favs.push(key);
       } else {
         favs.splice(idx, 1);
       }
       saveFavorites(favs);
-      updateFavButtons(dateStr);
+      updateFavButtons(key);
       if (document.getElementById('favoritesSection').classList.contains('show')) {
         renderFavorites();
       }
     }
 
-    function updateFavButtons(dateStr) {
-      var liked = isFavorite(dateStr);
-      // Main button
-      if (dateStr === currentDate) {
-        var btn = document.getElementById('favBtn');
-        var icon = document.getElementById('favIcon');
+    function updateFavButtons(key) {
+      var liked = isFavorite(key);
+      var btns = document.querySelectorAll('.fav-toggle[data-key="' + key + '"]');
+      Array.prototype.forEach.call(btns, function(btn) {
+        var icon = btn.querySelector('.fav-icon');
         if (liked) {
           btn.classList.add('liked');
           icon.innerHTML = '\u2665';
@@ -1722,32 +1738,17 @@
         btn.classList.remove('pop');
         void btn.offsetWidth;
         btn.classList.add('pop');
-      }
-      // Modal button
-      if (dateStr === modalCurrentDate) {
-        var mbtn = document.getElementById('modalFavBtn');
-        var micon = document.getElementById('modalFavIcon');
-        if (liked) {
-          mbtn.classList.add('liked');
-          micon.innerHTML = '\u2665';
-        } else {
-          mbtn.classList.remove('liked');
-          micon.innerHTML = '\u2661';
-        }
-        mbtn.classList.remove('pop');
-        void mbtn.offsetWidth;
-        mbtn.classList.add('pop');
-      }
+      });
     }
 
     function renderFavorites() {
       var container = document.getElementById('favoritesContent');
       var favs = getFavorites();
-      // Filter to only dates with actual quotes, sort newest first
+      // Filter to only keys with actual quotes, sort newest first
       var favQuotes = favs
-        .filter(function(d) { return quotesByDate[d]; })
-        .sort(function(a, b) { return b.localeCompare(a); })
-        .map(function(d) { return quotesByDate[d]; });
+        .filter(function(k) { return quotesByKey[k]; })
+        .map(function(k) { return quotesByKey[k]; })
+        .sort(function(a, b) { return b.date.localeCompare(a.date) || a.key.localeCompare(b.key); });
 
       if (favQuotes.length === 0) {
         container.innerHTML =
@@ -1765,13 +1766,13 @@
         var mood = getMood(q);
         var moodStr = mood ? mood.emoji + ' ' : '';
         html +=
-          '<div class="fav-card" onclick="openModal(quotesByDate[\'' + q.date + '\'])">' +
+          '<div class="fav-card" onclick="openModal(\'' + q.date + '\')">' +
             '<div class="fav-card-color theme-' + themeIdx + '" style="background:inherit;"></div>' +
             '<div class="fav-card-body">' +
               '<div class="fav-card-quote">' + moodStr + '\u201C' + q.quote + '\u201D</div>' +
               '<div class="fav-card-meta">\u2014 ' + q.author + '  \u00B7  ' + formatDate(q.date) + '</div>' +
             '</div>' +
-            '<button class="fav-card-remove" onclick="event.stopPropagation(); toggleFavorite(\'' + q.date + '\')" aria-label="Remove favorite">\u2665</button>' +
+            '<button class="fav-card-remove" onclick="event.stopPropagation(); toggleFavorite(\'' + q.key + '\')" aria-label="Remove favorite">\u2665</button>' +
           '</div>';
       });
       html += '</div>';
@@ -1826,47 +1827,35 @@
         allQuotes = quotes;
         var today = getTodayStr();
 
-        // Build lookup
-        quotes.forEach(function(q) {
-          quotesByDate[q.date] = q;
-        });
+        quotes.forEach(registerQuote);
 
-        // Check for ?date= parameter in URL
+        // ?date= accepts a date or a quote key (date#n) from a shared link
         var urlParams = new URLSearchParams(window.location.search);
-        var requestedDate = urlParams.get('date');
+        var requested = urlParams.get('date');
 
-        // Find requested quote, today's quote, or most recent
-        var todayQuote = null;
-        if (requestedDate && quotesByDate[requestedDate]) {
-          todayQuote = quotesByDate[requestedDate];
+        // Show the requested day, today, or the most recent day with quotes
+        var displayDate = null;
+        if (requested && quotesByKey[requested]) {
+          displayDate = quotesByKey[requested].date;
+        } else if (quotesByDate[today]) {
+          displayDate = today;
         } else {
-          todayQuote = quotesByDate[today];
-        }
-        if (!todayQuote) {
-          var sorted = quotes.slice().sort(function(a, b) {
-            return b.date.localeCompare(a.date);
-          });
-          todayQuote = sorted[0];
+          displayDate = Object.keys(quotesByDate).sort().pop();
         }
 
-        currentDate = todayQuote.date;
+        currentDate = displayDate;
+        var dayQuotes = quotesByDate[displayDate];
 
-        // Render main card
-        renderCard(document.getElementById('mainCard'), todayQuote);
+        renderDay(document.getElementById('mainCards'), displayDate);
         document.getElementById('loading').style.display = 'none';
-        document.getElementById('mainCardWrapper').style.display = '';
-        document.getElementById('actionBtns').style.display = '';
-
-        // Set up favorite button for current quote
-        updateFavButtons(currentDate);
 
         // Confetti burst for celebrate quotes
-        if (todayQuote.celebrate) {
+        if (dayQuotes.some(function(q) { return q.celebrate; })) {
           setTimeout(launchConfetti, 600);
         }
 
         // Mood badge in header
-        var mood = getMood(todayQuote);
+        var mood = getMood(dayQuotes[0]);
         if (mood) {
           document.getElementById('moodEmoji').textContent = mood.emoji;
           document.getElementById('moodLabel').textContent = mood.label;
