@@ -1228,6 +1228,56 @@
       margin-bottom: -1.2rem;
     }
 
+    /* Paragraph breaks inside a quote (blank line in the JSON text) */
+    .quote-card .quote-para {
+      display: block;
+      margin-bottom: 1em;
+    }
+
+    .quote-card .quote-para:last-child {
+      margin-bottom: 0;
+    }
+
+    /* Stories (multi-paragraph text): compact, left-aligned so the card fits a phone screen */
+    .quote-card.story {
+      min-height: 0;
+      padding: 1.6rem 1.4rem 1.4rem;
+    }
+
+    .quote-card.story .card-mood-emoji {
+      font-size: 1.5rem;
+      margin-bottom: 0.1rem;
+    }
+
+    .quote-card.story .deco-quote {
+      font-size: 3rem;
+      margin-bottom: -0.9rem;
+    }
+
+    .quote-card.story .quote-text {
+      font-size: 0.88rem;
+      line-height: 1.45;
+      text-align: left;
+      margin-bottom: 0.9rem;
+    }
+
+    .quote-card.story .quote-para {
+      margin-bottom: 0.6rem;
+    }
+
+    .quote-card.story .quote-para:last-child {
+      margin-bottom: 0;
+    }
+
+    .quote-card.story .quote-author {
+      font-size: 0.85rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .quote-card.story .quote-note {
+      font-size: 0.78rem;
+    }
+
     /* ========== RESPONSIVE ========== */
     @media (min-width: 600px) {
       .header h1 { font-size: 3rem; }
@@ -1235,6 +1285,8 @@
       .quote-card .quote-text { font-size: 1.7rem; }
       .quote-card.long-quote { min-height: 600px; }
       .quote-card.long-quote .quote-text { font-size: 1.3rem; }
+      .quote-card.story { min-height: 0; padding: 2rem 2rem 1.8rem; }
+      .quote-card.story .quote-text { font-size: 1rem; }
     }
   </style>
 </head>
@@ -1459,6 +1511,7 @@
       cardEl.classList.remove('celebrate');
       cardEl.classList.remove('rainbow');
       cardEl.classList.remove('long-quote');
+      cardEl.classList.remove('story');
       cardEl.classList.add('quote-card');
       cardEl.classList.add('theme-' + themeIdx);
       if (quote.legendary) {
@@ -1478,6 +1531,9 @@
       }
       if (quote.quote.length > 250) {
         cardEl.classList.add('long-quote');
+      }
+      if (quote.quote.length > 600) {
+        cardEl.classList.add('story');
       }
 
       // Special entrance animations for main card
@@ -1506,17 +1562,21 @@
         moodLabelEl.style.display = 'none';
       }
 
-      // Render quote text with bold emphasis (text between *asterisks*) and line breaks
+      // Render quote text with bold emphasis (text between *asterisks*), line breaks,
+      // and paragraphs (blank lines)
       var quoteTextEl = cardEl.querySelector('.quote-text');
-      var rawText = '\u201C' + quote.quote + '\u201D';
       var needsHtml = quote.quote.indexOf('*') !== -1 || quote.quote.indexOf('\n') !== -1;
       if (needsHtml) {
-        var html = rawText
-          .replace(/\n/g, '<br>')
-          .replace(/\*([^*]+)\*/g, '<strong>$1</strong>');
-        quoteTextEl.innerHTML = html;
+        var paras = quote.quote.split(/\n\s*\n/).map(function(p) {
+          return p.replace(/\n/g, '<br>').replace(/\*([^*]+)\*/g, '<strong>$1</strong>');
+        });
+        paras[0] = '\u201C' + paras[0];
+        paras[paras.length - 1] += '\u201D';
+        quoteTextEl.innerHTML = paras.map(function(p) {
+          return '<span class="quote-para">' + p + '</span>';
+        }).join('');
       } else {
-        quoteTextEl.textContent = rawText;
+        quoteTextEl.textContent = '\u201C' + quote.quote + '\u201D';
       }
       cardEl.querySelector('.quote-author').textContent = '\u2014 ' + quote.author;
 
