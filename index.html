@@ -1532,7 +1532,7 @@
       if (quote.quote.length > 250) {
         cardEl.classList.add('long-quote');
       }
-      if (quote.quote.length > 600) {
+      if (quote.story || quote.quote.length > 600) {
         cardEl.classList.add('story');
       }
 
